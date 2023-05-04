@@ -4,8 +4,8 @@
 
 <style lang="scss">
 :root {
-  --primary: #282828;
-  --secondary: #fca842;
+  --primary: #eee;
+  --secondary: #131313;
   --green1: #1ab43b;
   --yellow1: #f9cc00;
   --blue1: #004fea;
@@ -14,7 +14,6 @@
   --dark3: #383838;
   --dark4: #5a5a5a;
   --dark5: #868686;
-  --dark-blue: #12141f;
   --dark-gradient: linear-gradient(0deg, #011c2a, #01111a);
   --red1: #eb2f2f;
   --box-shadow-default: 0 30px 54px 0 rgba(35, 54, 70, 0.12);
@@ -36,7 +35,7 @@ html,
 body {
   min-width: 100vw;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #232323;
 }
 
 h1,
