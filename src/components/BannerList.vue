@@ -3,10 +3,13 @@ import { ref, onMounted } from "vue";
 
 import http from "@/http";
 
+import ChevronRight from "vue-material-design-icons/ChevronRight.vue";
+import ChevronLeft from "vue-material-design-icons/ChevronLeft.vue";
+
 import "swiper/css";
 import "swiper/css/bundle";
-import Swiper, { Navigation } from "swiper";
-Swiper.use([Navigation]);
+import Swiper, { Pagination, Navigation } from "swiper";
+Swiper.use([Pagination, Navigation]);
 
 const emit = defineEmits(["changeBanner"]);
 
@@ -24,7 +27,6 @@ onMounted(() => {
 });
 
 const startBannerSlider = () => {
-  console.log("a");
   setTimeout(() => {
     const slider = new Swiper("#bannerSlider", {
       autoHeight: true,
@@ -35,6 +37,10 @@ const startBannerSlider = () => {
       pagination: {
         el: ".swiper-pagination",
         clickable: "true",
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
       },
     });
   }, 150);
@@ -58,13 +64,30 @@ const startBannerSlider = () => {
     </div>
 
     <div id="bannerPagination" class="swiper-pagination"></div>
+
+    <div
+      v-show="banners.length > 1"
+      class="swiper-button-next banner-control-next"
+    >
+      <ChevronRight class="arrow" fillColor="#fff" />
+    </div>
+    <div
+      v-show="banners.length > 1"
+      class="swiper-button-prev banner-control-prev"
+    >
+      <ChevronLeft class="arrow" fillColor="#fff" />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.intro-item {
+.swiper-container {
   position: relative;
   width: 100vw;
+}
+.intro-item {
+  position: relative;
+  width: 100%;
   overflow: hidden;
   border-radius: 0 !important;
   img {
@@ -78,19 +101,47 @@ const startBannerSlider = () => {
   display: block;
 }
 
-.swiper-pagination {
-  transform: translateY(-50px);
-  @media only screen and (max-width: 720px) {
-    transform: translateY(-30px);
+.overflow-initial {
+  overflow: initial !important;
+}
+
+.banner-control-next,
+.banner-control-prev {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 100%;
+  margin: 0 auto;
+  background-image: initial !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: background-color 0.2s ease;
+  pointer-events: initial !important;
+}
+
+.banner-control-prev {
+  left: 25px !important;
+  &::after {
+    content: none;
   }
 }
 
-.swiper-pagination-bullet {
-  background: #fff !important;
-  opacity: none !important;
+.banner-control-next {
+  right: 25px !important;
+  &::after {
+    content: none;
+  }
 }
 
-.overflow-initial {
-  overflow: initial !important;
+.banner-control-next .arrow,
+.banner-control-prev .arrow {
+  margin: 0 !important;
+  display: flex;
+}
+
+.banner-control-next:hover,
+.banner-control-prev:hover {
+  background-color: rgba(0, 0, 0, 0.9);
 }
 </style>

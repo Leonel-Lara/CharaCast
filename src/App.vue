@@ -90,4 +90,15 @@ img {
 .pointer {
   cursor: pointer;
 }
+
+.all {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+}
+
+.swiper-pagination-bullet-active {
+  background: var(--secondary) !important;
+}
 </style>
