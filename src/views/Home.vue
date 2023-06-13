@@ -2,6 +2,7 @@
 import { ref } from "vue";
 
 import BannerList from "@/components/BannerList";
+import Menu from "@/components/Menu";
 
 const banners = ref([
   require("../assets/images/rick-and-morty.png"),
@@ -11,8 +12,17 @@ const banners = ref([
 
 <template>
   <div class="all">
-    <BannerList :banners="banners" />
+    <BannerList class="banner-list" :banners="banners" />
+    <div class="container">
+      <Menu />
+    </div>
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.banner-list {
+  position: relative;
+  width: 100%;
+  object-fit: cover;
+}
+</style>

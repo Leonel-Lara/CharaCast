@@ -1,15 +1,11 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 
-import http from "@/http";
-
-import ChevronRight from "vue-material-design-icons/ChevronRight.vue";
-import ChevronLeft from "vue-material-design-icons/ChevronLeft.vue";
-
+import { Navigation, Pagination } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
-import "swiper/css/bundle";
-import Swiper, { Pagination, Navigation } from "swiper";
-Swiper.use([Pagination, Navigation]);
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const emit = defineEmits(["changeBanner"]);
 
@@ -22,126 +18,51 @@ const props = defineProps({
   },
 });
 
-onMounted(() => {
-  startBannerSlider();
-});
+const swiperInstance = ref(null);
 
-const startBannerSlider = () => {
+const setSwiper = (swiper) => {
+  swiperInstance.value = swiper;
   setTimeout(() => {
-    const slider = new Swiper("#bannerSlider", {
-      autoHeight: true,
-      slidesPerView: 1,
-      spaceBetween: 0,
-      loop: true,
-      grabCursor: true,
-      pagination: {
-        el: ".swiper-pagination",
-        clickable: "true",
-      },
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-    });
-  }, 150);
+    swiperInstance.value.slideTo(0);
+  }, 250);
 };
 </script>
 
 <template>
-  <div
-    v-show="banners.length > 0"
-    id="bannerSlider"
-    class="swiper-container overflow-initial"
+  <swiper
+    :modules="[Navigation, Pagination]"
+    navigation
+    :pagination="{ clickable: true }"
+    :slides-per-view="1"
+    :space-between="0"
+    :observer="true"
+    :observeParents="true"
+    :grab-cursor="true"
+    class="slider"
+    @swiper="setSwiper"
   >
-    <div class="swiper-wrapper">
-      <div
-        v-for="(banner, index) in props.banners"
-        :key="index"
-        class="intro-item swiper-slide"
-      >
-        <img :src="banner" alt="imagem banner" />
-      </div>
-    </div>
-
-    <div id="bannerPagination" class="swiper-pagination"></div>
-
-    <div
-      v-show="banners.length > 1"
-      class="swiper-button-next banner-control-next"
+    <swiper-slide
+      v-for="(banner, index) in banners"
+      :key="index"
+      class="animated fadeIn slide-item"
     >
-      <ChevronRight class="arrow" fillColor="#fff" />
-    </div>
-    <div
-      v-show="banners.length > 1"
-      class="swiper-button-prev banner-control-prev"
-    >
-      <ChevronLeft class="arrow" fillColor="#fff" />
-    </div>
-  </div>
+      <img :src="banner" loading="lazy" />
+    </swiper-slide>
+  </swiper>
 </template>
 
 <style lang="scss" scoped>
-.swiper-container {
+.slide-item {
   position: relative;
-  width: 100vw;
-}
-.intro-item {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 0 !important;
+  background: transparent !important;
+  border: none;
+  padding: 0 !important;
   img {
     position: relative;
+    display: block;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
-}
-
-.swiper-slide {
-  position: relative;
-  display: block;
-}
-
-.overflow-initial {
-  overflow: initial !important;
-}
-
-.banner-control-next,
-.banner-control-prev {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 100%;
-  margin: 0 auto;
-  background-image: initial !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  transition: background-color 0.2s ease;
-  pointer-events: initial !important;
-}
-
-.banner-control-prev {
-  left: 25px !important;
-  &::after {
-    content: none;
-  }
-}
-
-.banner-control-next {
-  right: 25px !important;
-  &::after {
-    content: none;
-  }
-}
-
-.banner-control-next .arrow,
-.banner-control-prev .arrow {
-  margin: 0 !important;
-  display: flex;
-}
-
-.banner-control-next:hover,
-.banner-control-prev:hover {
-  background-color: rgba(0, 0, 0, 0.9);
 }
 </style>

@@ -34,8 +34,8 @@
 html,
 body {
   min-width: 100vw;
-  min-height: 100vh;
-  background-color: #232323;
+  height: 100vh;
+  background-color: #f5f5f5;
 }
 
 h1,
@@ -100,5 +100,122 @@ img {
 
 .swiper-pagination-bullet-active {
   background: var(--secondary) !important;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 100%;
+  background-color: #00000088;
+  color: #fff !important;
+  z-index: 2;
+  &::after {
+    font-size: 1.2rem !important;
+  }
+}
+
+.btn {
+  position: relative;
+  padding: 16px 24px;
+  border-radius: 0.6rem;
+  background-color: var(--secondary);
+  margin: 25px auto 0 auto;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+  transition: transform 0.25s ease;
+  &:hover {
+    transform: translateY(-3px);
+  }
+  &.border {
+    padding: 14px 24px;
+    border: 1px solid #000;
+    background-color: transparent;
+    box-shadow: none;
+    span {
+      color: #000;
+    }
+  }
+  &.icon {
+    padding: 12px 24px;
+    gap: 0.75rem;
+  }
+}
+
+.input-item {
+  position: relative;
+  width: 100%;
+  margin: 1.35rem 0 0 0;
+
+  span {
+    position: relative;
+    display: block;
+    font-family: fontLight;
+    font-size: 0.9rem;
+    color: var(--primary);
+    .blue {
+      color: var(--blue);
+    }
+  }
+
+  input,
+  select,
+  select option {
+    position: relative;
+    font-family: fontRegular;
+    font-size: 1rem;
+    width: 100%;
+    height: 44px;
+    border-radius: 6px;
+    padding: 0.25rem 0.85rem;
+    background-color: #eaeaea;
+    color: var(--primary);
+    &::placeholder {
+      color: var(--dark5);
+      font-family: fontLight;
+      font-size: 1rem;
+    }
+  }
+  select option:disabled {
+    color: #aaa !important;
+  }
+  textarea {
+    position: relative;
+    width: 100%;
+    height: 90px;
+    padding: 0.65rem 0.85rem;
+    border-radius: 6px;
+    background-color: #eaeaea;
+    font-family: fontRegular;
+    font-size: 1rem;
+    color: var(--primary);
+    resize: none;
+    &::-webkit-scrollbar {
+      width: 0.3em;
+    }
+
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+      outline: 1px solid slategrey;
+    }
+  }
+}
+
+.container {
+  position: relative;
+  width: 80%;
+  max-width: 1100px;
+  margin: 0 auto;
+  @media only screen and (max-width: 1159px) {
+    width: 90%;
+  }
 }
 </style>
