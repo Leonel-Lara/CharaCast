@@ -3,6 +3,7 @@ import { ref } from "vue";
 
 import BannerList from "@/components/BannerList";
 import Menu from "@/components/Menu";
+import CardList from "@/components/CardList";
 
 const banners = ref([
   require("../assets/images/rick-and-morty.png"),
@@ -15,6 +16,7 @@ const banners = ref([
     <BannerList class="banner-list" :banners="banners" />
     <div class="container">
       <Menu />
+      <CardList />
     </div>
   </div>
 </template>

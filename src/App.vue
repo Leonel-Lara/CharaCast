@@ -6,7 +6,7 @@
 :root {
   --primary: #eee;
   --secondary: #131313;
-  --green1: #1ab43b;
+  --green1: #488b3c;
   --yellow1: #f9cc00;
   --blue1: #004fea;
   --dark1: #050a0e;
@@ -35,7 +35,7 @@ html,
 body {
   min-width: 100vw;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #fff;
 }
 
 h1,
