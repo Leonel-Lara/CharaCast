@@ -6,18 +6,16 @@ import Menu from "@/components/Menu";
 import CardList from "@/components/CardList";
 
 const banners = ref([
-  require("../assets/images/rick-and-morty.png"),
   require("../assets/images/pokemon.png"),
+  require("../assets/images/rick-and-morty.png"),
 ]);
 </script>
 
 <template>
-  <div class="all">
-    <BannerList class="banner-list" :banners="banners" />
-    <div class="container">
-      <Menu />
-      <CardList />
-    </div>
+  <BannerList class="banner-list" :banners="banners" />
+  <div class="container">
+    <Menu />
+    <CardList />
   </div>
 </template>
 

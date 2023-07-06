@@ -1,34 +1,49 @@
 <script setup>
 import { ref } from "vue";
 
+import Pokedex from "pokedex-promise-v2";
+
 import http from "@/http";
 
 import Tabs from "@/components/Tabs";
 
-const characters = ref([]);
+const pokemons = ref([]);
+const pokemonsName = ref([]);
+const P = new Pokedex();
 
 http
-  .get("character")
+  .get("pokemon/?limit=18")
   .then((response) => {
-    characters.value = response?.data?.results;
-    console.log(characters.value);
+    pokemonsName.value = response?.data?.results.map((pokemon) => {
+      return pokemon.name;
+    });
+    getPokemonsDetails();
   })
   .catch((err) => {
     console.log(err);
-    // fieldRequiredAlert("Algo deu errado, tente novamente mais tarde.");
   });
+
+const getPokemonsDetails = () => {
+  P.getPokemonByName(pokemonsName.value)
+    .then((response) => {
+      pokemons.value = response;
+    })
+    .catch((err) => {
+      console.log(err);
+      // fieldRequiredAlert("Algo deu errado, tente novamente mais tarde.");
+    });
+};
 </script>
 
 <template>
   <div class="cards-holder">
-    <div
-      class="card-holder"
-      v-for="character in characters"
-      :key="character.id"
-    >
-      <div class="card-name">{{ character.name }}</div>
+    <div class="card-holder" v-for="pokemon in pokemons" :key="pokemon.id">
+      <div class="card-name">{{ pokemon.name }}</div>
       <div class="card-img">
-        <img :src="character.image" alt="imagem personagem" />
+        <img
+          :src="pokemon.sprites.other.dream_world.front_default"
+          alt="imagem pokemon"
+        />
       </div>
       <div class="details-holder">
         <Tabs />
@@ -43,8 +58,9 @@ http
   width: 100%;
   margin-top: 40px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 0.5fr));
-  gap: 2em;
+  grid-template-columns: 260px 260px 260px;
+  justify-content: space-between;
+  gap: 4em;
   @media only screen and (max-width: 720px) {
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
@@ -52,7 +68,7 @@ http
 
 .card-holder {
   position: relative;
-  height: 400px;
+  height: 390px;
   background-color: var(--green1);
   border-radius: 12px;
   box-shadow: var(--box-shadow-default);
@@ -68,6 +84,7 @@ http
   .card-img {
     position: relative;
     width: 160px;
+    height: 160px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -76,8 +93,8 @@ http
     img {
       position: relative;
       width: 100%;
-      border-radius: 100%;
-      object-fit: cover;
+      height: 100%;
+      object-fit: contain;
     }
   }
 

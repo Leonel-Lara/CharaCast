@@ -1,5 +1,7 @@
 <template>
-  <router-view :key="$route.fullPath" />
+  <div id="app">
+    <router-view :key="$route.fullPath" />
+  </div>
 </template>
 
 <style lang="scss">
@@ -31,13 +33,6 @@
   list-style: none;
 }
 
-html,
-body {
-  min-width: 100vw;
-  height: 100vh;
-  background-color: #fff;
-}
-
 h1,
 h2,
 h3,
@@ -52,6 +47,21 @@ svg,
 div {
   font-size: 14px;
   color: var(--primary);
+}
+
+html,
+body {
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+img {
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-select: none;
 }
 
 @font-face {
@@ -78,24 +88,8 @@ div {
   font-display: swap;
 }
 
-img {
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-select: none;
-}
-
 .pointer {
   cursor: pointer;
-}
-
-.all {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
 }
 
 .swiper-pagination-bullet-active {
