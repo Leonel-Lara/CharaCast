@@ -1,11 +1,10 @@
 <script setup>
 import { ref } from "vue";
 
-import { Navigation, Pagination } from "swiper";
+import { Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
 import "swiper/css/navigation";
-import "swiper/css/pagination";
 
 const emit = defineEmits(["changeBanner"]);
 
@@ -30,9 +29,8 @@ const setSwiper = (swiper) => {
 
 <template>
   <swiper
-    :modules="[Navigation, Pagination]"
+    :modules="[Navigation]"
     navigation
-    :pagination="{ clickable: true }"
     :slides-per-view="1"
     :space-between="0"
     :observer="true"

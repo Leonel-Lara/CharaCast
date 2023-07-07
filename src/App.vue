@@ -21,7 +21,7 @@
   --box-shadow-default: 0 30px 54px 0 rgba(35, 54, 70, 0.12);
 }
 
-*:not(path) {
+* {
   border: none;
   outline: none;
   margin: 0;
@@ -53,6 +53,7 @@ html,
 body {
   min-height: 100vh;
   min-width: 100vw;
+  overflow-x: hidden;
 }
 
 img {
