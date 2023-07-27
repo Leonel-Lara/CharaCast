@@ -109,6 +109,12 @@ img {
     font-size: 1.2rem !important;
   }
 }
+.swiper-button-next {
+  right: 50px !important;
+}
+.swiper-button-prev {
+  left: 50px !important;
+}
 
 .btn {
   position: relative;

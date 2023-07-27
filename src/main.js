@@ -4,6 +4,7 @@ import router from "./router";
 import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Swal from "sweetalert2";
+import Vue3TouchEvents from "vue3-touch-events";
 import "./assets/css/animate.css";
 
 const app = createApp(App);
@@ -39,4 +40,5 @@ const $toast = (options) => {
 app.provide("$toast", $toast);
 app.use(router);
 app.use(VueSweetalert2, options);
+app.use(Vue3TouchEvents);
 app.mount("#app");

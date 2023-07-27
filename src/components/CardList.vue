@@ -2,6 +2,7 @@
 import { ref } from "vue";
 
 import Pokedex from "pokedex-promise-v2";
+import analyze from "rgbaster";
 
 import http from "@/http";
 
@@ -9,7 +10,13 @@ import Tabs from "@/components/Tabs";
 
 const pokemons = ref([]);
 const pokemonsName = ref([]);
+const tabs = ref(["About", "Stats", "Moves", "Evolution"]);
+const selectedTab = ref(1);
 const P = new Pokedex();
+
+const changeTab = (tab) => {
+  selectedTab.value = tab;
+};
 
 http
   .get("pokemon/?limit=18")
@@ -33,20 +40,43 @@ const getPokemonsDetails = () => {
       // fieldRequiredAlert("Algo deu errado, tente novamente mais tarde.");
     });
 };
+
+const getDominantColor = async (imgPokemon, index) => {
+  const result = await analyze(imgPokemon, {
+    ignore: ["rgb(255,255,255)", "rgb(0,0,0)"],
+  });
+  pokemons.value[index].dominantColor = result[0].color;
+};
 </script>
 
 <template>
   <div class="cards-holder">
-    <div class="card-holder" v-for="pokemon in pokemons" :key="pokemon.id">
+    <div
+      v-for="(pokemon, index) in pokemons"
+      :key="pokemon.id"
+      class="card-holder"
+      :style="`background-color:${pokemon.dominantColor}`"
+    >
       <div class="card-name">{{ pokemon.name }}</div>
       <div class="card-img">
         <img
+          @load="
+            getDominantColor(
+              pokemon.sprites.other.dream_world.front_default,
+              index
+            )
+          "
           :src="pokemon.sprites.other.dream_world.front_default"
           alt="imagem pokemon"
         />
       </div>
       <div class="details-holder">
-        <Tabs />
+        <Tabs
+          :tabs="tabs"
+          :selectedTab="selectedTab"
+          :tabColor="pokemon.dominantColor"
+          @setActiveTab="changeTab"
+        />
       </div>
     </div>
   </div>
@@ -78,7 +108,7 @@ const getPokemonsDetails = () => {
   align-items: center;
   .card-name {
     text-align: center;
-    color: #eee;
+    color: #fff;
     font-size: 1.6em;
   }
   .card-img {
@@ -103,7 +133,7 @@ const getPokemonsDetails = () => {
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 200px;
+    height: 180px;
     background-color: #fff;
     border-radius: 20px 20px 12px 12px;
   }
