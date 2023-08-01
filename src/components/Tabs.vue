@@ -7,9 +7,11 @@ const activeBorder = ref(null);
 const emit = defineEmits(["setActiveTab"]);
 
 const props = defineProps({
-  pokemonId: {
-    type: Number,
-    default: null,
+  character: {
+    type: Object,
+    default: () => {
+      return {};
+    },
   },
   tabs: {
     type: Array,
@@ -19,7 +21,7 @@ const props = defineProps({
   },
   selectedTab: {
     type: Number,
-    default: 1,
+    default: 2,
   },
   tabColor: {
     type: String,
@@ -39,6 +41,12 @@ watch(
     setCss(val.length);
   }
 );
+watch(
+  () => props.tabColor,
+  () => {
+    setCss(props.tabs);
+  }
+);
 
 onMounted(() => {
   setCss(props.tabs.length);
@@ -53,13 +61,14 @@ const setCss = (tabsLength) => {
   tabItems[props.selectedTab - 1].style.color = props.tabColor;
 
   activeBorder.value.style.width = `${100 / tabsLength}%`;
+  activeBorder.value.style.background = props.tabColor;
   activeBorder.value.style.transform = `translateX(${
     100 * (props.selectedTab - 1)
   }%)`;
 };
 
 const setActiveTab = (index) => {
-  emit("setActiveTab", index + 1);
+  emit("setActiveTab", index + 1, props.character);
 };
 </script>
 
@@ -91,7 +100,6 @@ const setActiveTab = (index) => {
     height: 1px;
     left: 0;
     bottom: -1px;
-    background-color: var(--primary);
     transition: width 0.25s ease, transform 0.25s ease;
   }
   .tab {
@@ -103,6 +111,7 @@ const setActiveTab = (index) => {
     align-items: center;
     text-align: center;
     cursor: pointer;
+    transition: color 0.2s ease-in-out;
   }
 }
 </style>
