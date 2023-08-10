@@ -3,7 +3,7 @@
 <template>
   <div class="cards-holder">
     <div
-      class="card-holder loading"
+      class="card-holder loading-card"
       v-for="(n, index) in 18"
       :key="index"
     ></div>
@@ -11,7 +11,7 @@
 </template>
 
 <style lang="scss" scoped>
-.loading {
+.loading-card {
   opacity: 0.7;
   animation: skeleton-loading 2s linear infinite alternate;
 }
