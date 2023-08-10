@@ -33,6 +33,20 @@
   list-style: none;
 }
 
+body::-webkit-scrollbar {
+  width: 0.25em;
+}
+
+body::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  outline: 0px solid slategrey;
+}
+
 h1,
 h2,
 h3,
@@ -217,6 +231,21 @@ img {
   margin: 0 auto;
   @media only screen and (max-width: 1159px) {
     width: 90%;
+  }
+}
+
+.style-scrollbar {
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 0.25em;
+  }
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--dark4);
+    outline: 0px solid slategrey;
   }
 }
 </style>

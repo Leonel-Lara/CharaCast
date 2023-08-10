@@ -6,11 +6,11 @@ import FilterIcon from "vue-material-design-icons/FilterMultipleOutline";
   <div class="card">
     <img src="../assets/images/logo-vertical-cut.png" alt="logo" />
     <div class="btn border icon">
-      <span>Filtrar personagens</span>
+      <span>Filter characters</span>
       <FilterIcon fillColor="#000" />
     </div>
     <div class="input-item">
-      <input placeholder="Pesquise pelo nome" type="text" />
+      <input placeholder="Search by name" type="text" />
     </div>
   </div>
 </template>

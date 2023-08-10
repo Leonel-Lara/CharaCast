@@ -12,7 +12,7 @@ import Tabs from "@/components/Tabs";
 const loading = ref(true);
 const pokemons = ref([]);
 const pokemonsName = ref([]);
-const tabs = ref(["About", "Stats", "Moves", "Evolution"]);
+const tabs = ref(["Stats", "About", "Move"]);
 const P = new Pokedex();
 
 const changeTab = (tab, pokemon) => {
@@ -42,11 +42,14 @@ const getPokemonsDetails = () => {
           stats: pokemon.stats.map((el) => {
             return { name: el.stat.name, value: el.base_stat };
           }),
-          selectedTab: 2,
+          selectedTab: 1,
+          move: getPokemonMove(pokemon),
+          species: getPokemonSpecies(pokemon),
         };
         return defaultPokemon;
       });
       pokemons.value.map((el) => getDominantColor(el));
+      console.log(pokemons.value[0]);
     })
     .catch((err) => {
       console.log(err);
@@ -75,6 +78,41 @@ const setStatName = (stat) => {
     default:
       return "--";
   }
+};
+
+const getPokemonMove = (pokemon) => {
+  const result = { name: "", effect: "" };
+  P.getMoveByName(pokemon.moves[0].move.name)
+    .then((response) => {
+      result.name = response.names[7].name;
+      result.effect = response.effect_entries[0].effect;
+    })
+    .catch((error) => {
+      console.log("There was an ERROR: ", error);
+    });
+  return result;
+};
+
+const getPokemonSpecies = (pokemon) => {
+  const result = {
+    text: "",
+    habitat: "",
+    parkEncounters: "",
+    shape: "",
+    weight: "",
+  };
+  P.getResource(pokemon.species.url)
+    .then((response) => {
+      result.text = response.flavor_text_entries[0].flavor_text;
+      result.habitat = response.habitat.name;
+      result.parkEncounters = response.pal_park_encounters[0].area.name;
+      result.shape = response.shape.name;
+      result.weight = pokemon.weight;
+    })
+    .catch((error) => {
+      console.log("There was an ERROR: ", error);
+    });
+  return result;
 };
 
 const getDominantColor = async (pokemon) => {
@@ -112,7 +150,7 @@ const getDominantColor = async (pokemon) => {
           @setActiveTab="changeTab"
         />
         <div class="details">
-          <div v-if="pokemon.selectedTab == 2" class="stats">
+          <div v-if="pokemon.selectedTab == 1" class="stats">
             <div
               class="item-holder"
               v-for="(stat, index) in pokemon.stats"
@@ -129,6 +167,24 @@ const getDominantColor = async (pokemon) => {
                 ></div>
               </div>
             </div>
+          </div>
+          <div v-if="pokemon.selectedTab == 2" class="species style-scrollbar">
+            <ul>
+              <li><span>Habitat:</span>{{ pokemon.species.habitat }}</li>
+              <li>
+                <span>Where to find:</span>{{ pokemon.species.parkEncounters }}
+              </li>
+              <li><span>Species:</span>{{ pokemon.species.shape }}</li>
+              <li><span>Weight:</span>{{ pokemon.species.weight }}</li>
+            </ul>
+            <span class="desc">{{ pokemon.species.text }}</span>
+          </div>
+
+          <div v-if="pokemon.selectedTab == 3" class="move style-scrollbar">
+            <span class="title">{{ pokemon.move.name }}</span>
+            <span class="desc">
+              {{ pokemon.move.effect }}
+            </span>
           </div>
         </div>
       </div>
@@ -201,7 +257,7 @@ const getDominantColor = async (pokemon) => {
     .details {
       position: relative;
       width: 100%;
-      height: 100%;
+      height: 77%;
       display: flex;
       justify-content: flex-start;
       align-items: flex-start;
@@ -242,6 +298,56 @@ const getDominantColor = async (pokemon) => {
               border-radius: 10px;
             }
           }
+        }
+      }
+      .species {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        text-align: flex-start;
+        width: 100%;
+        height: 100%;
+        ul {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          flex-wrap: wrap;
+          li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            span {
+              font-size: 0.85rem;
+              font-family: fontMedium;
+              color: #767676;
+            }
+            font-size: 0.8rem;
+            color: #767676;
+          }
+        }
+        .desc {
+          margin-top: 10px;
+          font-size: 0.85rem;
+          color: #767676;
+          font-family: fontMedium;
+        }
+      }
+      .move {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        text-align: flex-start;
+        width: 100%;
+        height: 100%;
+        .title {
+          font-size: 0.85rem;
+          font-family: fontBold;
+          color: #767676;
+        }
+        .desc {
+          font-size: 0.85rem;
+          color: #767676;
+          font-family: fontMedium;
         }
       }
     }
