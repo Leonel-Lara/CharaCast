@@ -39,7 +39,7 @@ img {
 }
 
 .input-item {
-  width: 30%;
+  width: 25%;
   margin: 0;
   input {
     border: 1px solid #CECECE;

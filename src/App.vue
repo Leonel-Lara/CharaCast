@@ -227,7 +227,7 @@ img {
 .container {
   position: relative;
   width: 80%;
-  max-width: 1100px;
+  max-width: 1300px;
   margin: 0 auto;
   @media only screen and (max-width: 1159px) {
     width: 90%;

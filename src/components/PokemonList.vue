@@ -88,11 +88,11 @@ const setStatName = (stat) => {
     case "attack":
       return "Attack";
     case "defense":
-      return "Defence";
+      return "Defense";
     case "special-attack":
       return "Sp. Attack";
     case "special-defense":
-      return "Sp. Defence";
+      return "Sp. Defense";
     case "speed":
       return "Speed";
 
@@ -241,7 +241,7 @@ const getDominantColor = async (pokemon) => {
   position: relative;
   width: 100%;
   display: grid;
-  grid-template-columns: 260px 260px 260px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   justify-content: space-between;
   gap: 4em;
   @media only screen and (max-width: 720px) {
@@ -360,7 +360,7 @@ const getDominantColor = async (pokemon) => {
             gap: 10px;
             span {
               font-size: 0.85rem;
-              font-family: fontMedium;
+              font-family: fontBold;
               color: #767676;
             }
             font-size: 0.85rem;
@@ -382,7 +382,7 @@ const getDominantColor = async (pokemon) => {
         height: 100%;
         .title {
           font-size: 0.85rem;
-          font-family: fontMedium;
+          font-family: fontBold;
           color: #767676;
         }
         .desc {
