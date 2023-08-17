@@ -14,7 +14,7 @@ import PlusIcon from "vue-material-design-icons/Plus";
 const loading = ref(true);
 const loadingMore = ref(false);
 const page = ref(1);
-const urlPokemon = ref("pokemon/?limit=18");
+const urlPokemon = ref("pokemon/?limit=20");
 const allPokemonsFeteched = ref(false);
 const pokemons = ref([]);
 const pokemonsName = ref([]);
@@ -76,8 +76,10 @@ const getPokemonsDetails = () => {
       // fieldRequiredAlert("Algo deu errado, tente novamente mais tarde.");
     })
     .finally(() => {
-      loading.value = false;
-      loadingMore.value = false;
+      setTimeout(() => {
+        loading.value = false;
+        loadingMore.value = false;
+      }, 500);
     });
 };
 
@@ -190,6 +192,7 @@ const getDominantColor = async (pokemon) => {
                 </div>
               </div>
             </div>
+
             <div
               v-if="pokemon.selectedTab == 2"
               class="species style-scrollbar"
@@ -303,7 +306,6 @@ const getDominantColor = async (pokemon) => {
       display: flex;
       justify-content: flex-start;
       align-items: flex-start;
-      padding: 16px;
 
       .stats {
         position: relative;
@@ -313,6 +315,7 @@ const getDominantColor = async (pokemon) => {
         align-items: flex-start;
         width: 100%;
         height: 100%;
+        padding: 16px;
         .item-holder {
           position: relative;
           width: 100%;
@@ -349,6 +352,7 @@ const getDominantColor = async (pokemon) => {
         text-align: flex-start;
         width: 100%;
         height: 100%;
+        padding: 16px;
         ul {
           display: flex;
           flex-direction: column;
@@ -380,6 +384,7 @@ const getDominantColor = async (pokemon) => {
         text-align: flex-start;
         width: 100%;
         height: 100%;
+        padding: 16px;
         .title {
           font-size: 0.85rem;
           font-family: fontBold;

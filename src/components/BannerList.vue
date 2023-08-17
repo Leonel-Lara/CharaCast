@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
 import "swiper/css/navigation";
 
-const emit = defineEmits(["changeBanner"]);
+const emit = defineEmits(["changedBanner"]);
 
 const props = defineProps({
   banners: {
@@ -25,6 +25,10 @@ const setSwiper = (swiper) => {
     swiperInstance.value.slideTo(0);
   }, 250);
 };
+
+const changedBanner = (evt) => {
+  emit("changedBanner", evt.activeIndex);
+};
 </script>
 
 <template>
@@ -38,6 +42,7 @@ const setSwiper = (swiper) => {
     :grab-cursor="true"
     class="slider"
     @swiper="setSwiper"
+    @activeIndexChange="changedBanner"
   >
     <swiper-slide
       v-for="(banner, index) in banners"

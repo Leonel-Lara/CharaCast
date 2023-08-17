@@ -4,20 +4,31 @@ import { ref } from "vue";
 import BannerList from "@/components/BannerList";
 import Menu from "@/components/Menu";
 import PokemonList from "@/components/PokemonList";
+import RickAndMortyList from "@/components/RickAndMortyList";
+
+const bannerToShow = ref(0);
 
 const banners = ref([
   require("../assets/images/pokemon.png"),
   require("../assets/images/rick-and-morty.png"),
 ]);
 
-const loading = ref(false);
+const changedBanner = (indexBanner) => {
+  bannerToShow.value = indexBanner;
+  console.log(bannerToShow.value);
+};
 </script>
 
 <template>
-  <BannerList class="banner-list" :banners="banners" />
+  <BannerList
+    class="banner-list"
+    :banners="banners"
+    @changedBanner="changedBanner"
+  />
   <div class="container">
     <Menu />
-    <PokemonList v-show="!loading" />
+    <PokemonList v-if="bannerToShow == 0" />
+    <RickAndMortyList v-if="bannerToShow == 1" />
   </div>
 </template>
 
