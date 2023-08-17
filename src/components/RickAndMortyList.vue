@@ -5,17 +5,23 @@ import analyze from "rgbaster";
 
 import { httpRickAndMorty } from "@/http";
 
+import Modal from "@/baseComponents/Modal";
 import DefaultCardList from "@/components/DefaultCardList";
 import Tabs from "@/components/Tabs";
 
+import OpenIcon from "vue-material-design-icons/OpenInNew";
 import PlusIcon from "vue-material-design-icons/Plus";
 
 const loading = ref(true);
 const loadingMore = ref(false);
+const urlCharacter = ref("character?page=");
 const page = ref(1);
 const allCharactersFeteched = ref(false);
 const tabs = ref(["About", "Episodes"]);
 const characters = ref([]);
+const characterNameEpisodes = ref("");
+const characterEpisodes = ref([]);
+const showModal = ref(false);
 
 onMounted(() => {
   getCharacters();
@@ -30,7 +36,7 @@ const getCharacters = () => {
   if (page.value > 1) loadingMore.value = true;
 
   httpRickAndMorty
-    .get("character?page=1")
+    .get(urlCharacter.value + page.value)
     .then((response) => {
       characters.value = [
         ...characters.value,
@@ -40,7 +46,10 @@ const getCharacters = () => {
             name: character.name,
             image: character.image,
             selectedTab: 1,
-            status: [
+            episodesId: character.episode.map((ep) =>
+              ep.substring(ep.lastIndexOf("/") + 1)
+            ),
+            about: [
               { name: "status", value: character.status },
               { name: "Gender", value: character.gender },
               { name: "Specie", value: character.species },
@@ -59,8 +68,33 @@ const getCharacters = () => {
       console.log(err);
     })
     .finally(() => {
-      loading.value = false;
+      setTimeout(() => {
+        loading.value = false;
+        loadingMore.value = false;
+      }, 500);
     });
+};
+
+const getEpisodes = (characterName, episodesId) => {
+  if (showModal.value) return;
+  characterNameEpisodes.value = characterName;
+  httpRickAndMorty
+    .get(`episode/${episodesId}`)
+    .then((response) => {
+      characterEpisodes.value = response?.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      showModal.value = true;
+    });
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  characterNameEpisodes.value = "";
+  characterEpisodes.value = [];
 };
 
 const getDominantColor = async (character) => {
@@ -72,6 +106,21 @@ const getDominantColor = async (character) => {
 </script>
 
 <template>
+  <transition
+    enter-active-class="animated fadeIn"
+    leave-active-class="animated fadeOut"
+  >
+    <div @click="closeModal" v-show="showModal" class="bg-cover"></div>
+  </transition>
+  <Modal @close="closeModal" v-show="showModal">
+    <template v-slot:title>All episodes - {{ characterNameEpisodes }}</template>
+    <ul>
+      <li v-for="(episode, index) in characterEpisodes" :key="index">
+        <span>{{ episode.name }} -> </span>{{ episode.air_date }} ->
+        {{ episode.episode }}
+      </li>
+    </ul>
+  </Modal>
   <DefaultCardList v-if="loading" />
   <div v-else class="character-holder">
     <div class="cards-holder">
@@ -99,23 +148,35 @@ const getDominantColor = async (character) => {
           <div class="details">
             <div
               v-if="character.selectedTab == 1"
-              class="status style-scrollbar"
+              class="about style-scrollbar"
             >
               <ul>
-                <li v-for="(item, index) in character.status" :key="index">
+                <li v-for="(item, index) in character.about" :key="index">
                   <span>{{ item.name }}:</span>{{ item.value }}
                 </li>
               </ul>
             </div>
             <div
               v-if="character.selectedTab == 2"
-              class="move style-scrollbar"
-            ></div>
+              class="episode-holder style-scrollbar"
+            >
+              <div
+                @click="getEpisodes(character.name, character.episodesId)"
+                class="btn border icon"
+              >
+                <span>Check out all episodes</span>
+                <OpenIcon :size="20" fillColor="#515151" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div @click="getCharacters" class="btn border icon">
+    <div
+      v-show="!allCharactersFeteched"
+      @click="getCharacters"
+      class="btn border icon"
+    >
       <span v-show="!loadingMore">Ver mais</span>
       <PlusIcon v-show="!loadingMore" fillColor="#000" />
       <div v-show="loadingMore" class="loading black"></div>
@@ -211,52 +272,57 @@ const getDominantColor = async (character) => {
       justify-content: flex-start;
       align-items: flex-start;
 
-      .status {
+      .about {
         position: relative;
         display: flex;
         flex-direction: column;
         text-align: flex-start;
         width: 100%;
         height: 100%;
-        padding: 16px;
-        ul {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          flex-wrap: wrap;
-          li {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            span {
-              font-size: 0.85rem;
-              font-family: fontBold;
-              color: #767676;
-              margin-right: 10px;
-            }
+        padding: 14px 16px;
+      }
+      .episode-holder {
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        .btn {
+          margin: 0;
+          padding: 8px 12px;
+          border: 1px solid #515151;
+          span {
             font-size: 0.85rem;
-            color: #767676;
+            font-family: fontMedium;
+            color: #515151;
+          }
+          .material-design-icon {
+            display: flex;
           }
         }
       }
-      .move {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        text-align: flex-start;
-        width: 100%;
-        height: 100%;
-        .title {
-          font-size: 0.85rem;
-          font-family: fontBold;
-          color: #767676;
-        }
-        .desc {
-          font-size: 0.85rem;
-          color: #767676;
-        }
-      }
     }
+  }
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-wrap: wrap;
+  li {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    span {
+      font-size: 0.85rem;
+      font-family: fontBold;
+      color: #767676;
+      margin-right: 10px;
+    }
+    font-size: 0.85rem;
+    color: #767676;
   }
 }
 </style>

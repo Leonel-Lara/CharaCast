@@ -2,7 +2,7 @@
 import { ref } from "vue";
 
 import BannerList from "@/components/BannerList";
-import Menu from "@/components/Menu";
+import Menu from "@/baseComponents/Menu";
 import PokemonList from "@/components/PokemonList";
 import RickAndMortyList from "@/components/RickAndMortyList";
 

@@ -6,9 +6,11 @@ import analyze from "rgbaster";
 
 import http from "@/http";
 
+import Modal from "@/baseComponents/Modal";
 import DefaultCardList from "@/components/DefaultCardList";
 import Tabs from "@/components/Tabs";
 
+import OpenIcon from "vue-material-design-icons/OpenInNew";
 import PlusIcon from "vue-material-design-icons/Plus";
 
 const loading = ref(true);
@@ -20,6 +22,9 @@ const pokemons = ref([]);
 const pokemonsName = ref([]);
 const tabs = ref(["Stats", "About", "Move"]);
 const P = new Pokedex();
+const pokemonNameMoves = ref([]);
+const pokemonFiltredMoves = ref([]);
+const showModal = ref(false);
 
 onMounted(() => {
   getPokemons();
@@ -63,7 +68,7 @@ const getPokemonsDetails = () => {
               return { name: el.stat.name, value: el.base_stat };
             }),
             selectedTab: 1,
-            move: getPokemonMove(pokemon),
+            moves: pokemon.moves,
             species: getPokemonSpecies(pokemon),
           };
           return defaultPokemon;
@@ -103,17 +108,33 @@ const setStatName = (stat) => {
   }
 };
 
-const getPokemonMove = (pokemon) => {
-  const result = { name: "", effect: "" };
-  P.getMoveByName(pokemon.moves[0].move.name)
-    .then((response) => {
-      result.name = response.names[7].name;
-      result.effect = response.effect_entries[0].effect;
-    })
-    .catch((error) => {
-      console.log("There was an ERROR: ", error);
-    });
-  return result;
+const getPokemonMoves = (pokemonName, pokemonMoves) => {
+  if (showModal.value) return;
+  pokemonNameMoves.value = pokemonName;
+  const arrayMoves = pokemonMoves.map((el) => el.move.name);
+  let result = { name: "", effect: "" };
+  for (let index = 0; index < arrayMoves.length; index++) {
+    const element = arrayMoves[index];
+    P.getMoveByName(element)
+      .then((response) => {
+        result.name = response.names[7].name;
+        result.effect = response.effect_entries[0].effect;
+        pokemonFiltredMoves.value.push(result);
+        result = { name: "", effect: "" };
+      })
+      .catch((error) => {
+        console.log("There was an ERROR: ", error);
+      })
+      .finally(() => {
+        showModal.value = true;
+      });
+  }
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  pokemonNameMoves.value = "";
+  pokemonFiltredMoves.value = [];
 };
 
 const getPokemonSpecies = (pokemon) => {
@@ -147,6 +168,25 @@ const getDominantColor = async (pokemon) => {
 </script>
 
 <template>
+  <transition
+    enter-active-class="animated fadeIn"
+    leave-active-class="animated fadeOut"
+  >
+    <div @click="closeModal" v-show="showModal" class="bg-cover"></div>
+  </transition>
+  <Modal @close="closeModal" v-show="showModal">
+    <template v-slot:title>All moves - {{ pokemonNameMoves }}</template>
+    <div
+      class="move-modal"
+      v-for="(move, index) in pokemonFiltredMoves"
+      :key="index"
+    >
+      <span class="title">{{ move.name }}</span>
+      <span class="desc">
+        {{ move.effect }}
+      </span>
+    </div>
+  </Modal>
   <DefaultCardList v-if="loading" />
   <div v-else class="pokemon-holder">
     <div class="cards-holder">
@@ -195,7 +235,7 @@ const getDominantColor = async (pokemon) => {
 
             <div
               v-if="pokemon.selectedTab == 2"
-              class="species style-scrollbar"
+              class="species-holder style-scrollbar"
             >
               <ul>
                 <li><span>Habitat:</span>{{ pokemon.species.habitat }}</li>
@@ -209,17 +249,24 @@ const getDominantColor = async (pokemon) => {
               <span class="desc">{{ pokemon.species.text }}</span>
             </div>
 
-            <div v-if="pokemon.selectedTab == 3" class="move style-scrollbar">
-              <span class="title">{{ pokemon.move.name }}</span>
-              <span class="desc">
-                {{ pokemon.move.effect }}
-              </span>
+            <div v-if="pokemon.selectedTab == 3" class="move-holder">
+              <div
+                @click="getPokemonMoves(pokemon.name, pokemon.moves)"
+                class="btn border icon"
+              >
+                <span>Check out all moves</span>
+                <OpenIcon :size="20" fillColor="#515151" />
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div @click="getPokemons" class="btn border icon">
+    <div
+      v-show="!allPokemonsFeteched"
+      @click="getPokemons"
+      class="btn border icon"
+    >
       <span v-show="!loadingMore">Ver mais</span>
       <PlusIcon v-show="!loadingMore" fillColor="#000" />
       <div v-show="loadingMore" class="loading black"></div>
@@ -315,7 +362,7 @@ const getDominantColor = async (pokemon) => {
         align-items: flex-start;
         width: 100%;
         height: 100%;
-        padding: 16px;
+        padding: 14px 16px;
         .item-holder {
           position: relative;
           width: 100%;
@@ -345,14 +392,14 @@ const getDominantColor = async (pokemon) => {
           }
         }
       }
-      .species {
+      .species-holder {
         position: relative;
         display: flex;
         flex-direction: column;
         text-align: flex-start;
         width: 100%;
         height: 100%;
-        padding: 16px;
+        padding: 14px 16px;
         ul {
           display: flex;
           flex-direction: column;
@@ -377,25 +424,46 @@ const getDominantColor = async (pokemon) => {
           color: #767676;
         }
       }
-      .move {
+      .move-holder {
         position: relative;
         display: flex;
-        flex-direction: column;
-        text-align: flex-start;
         width: 100%;
         height: 100%;
-        padding: 16px;
-        .title {
-          font-size: 0.85rem;
-          font-family: fontBold;
-          color: #767676;
-        }
-        .desc {
-          font-size: 0.85rem;
-          color: #767676;
+        justify-content: center;
+        align-items: center;
+        .btn {
+          margin: 0;
+          padding: 8px 12px;
+          border: 1px solid #515151;
+          span {
+            font-size: 0.85rem;
+            font-family: fontMedium;
+            color: #515151;
+          }
+          .material-design-icon {
+            display: flex;
+          }
         }
       }
     }
+  }
+}
+.move-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 10px 0;
+  gap: 5px;
+  .title {
+    font-size: 0.85rem;
+    font-family: fontBold;
+    color: #767676;
+  }
+  .desc {
+    font-size: 0.85rem;
+    color: #767676;
   }
 }
 </style>
