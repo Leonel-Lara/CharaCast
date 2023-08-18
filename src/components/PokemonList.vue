@@ -187,7 +187,7 @@ const getDominantColor = async (pokemon) => {
       </span>
     </div>
   </Modal>
-  <DefaultCardList v-if="loading" />
+  <DefaultCardList v-if="loading" class="animated fadeInUp" style="animation-delay: 600ms" />
   <div v-else class="pokemon-holder">
     <div class="cards-holder">
       <div

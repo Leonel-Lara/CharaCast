@@ -21,12 +21,13 @@ const changedBanner = (indexBanner) => {
 
 <template>
   <BannerList
-    class="banner-list"
+    class="banner-list animated fadeInDown"
+    style="animation-delay: 200ms"
     :banners="banners"
     @changedBanner="changedBanner"
   />
   <div class="container">
-    <Menu />
+    <Menu class="animated zoomIn" style="animation-delay: 400ms" />
     <PokemonList v-if="bannerToShow == 0" />
     <RickAndMortyList v-if="bannerToShow == 1" />
   </div>
