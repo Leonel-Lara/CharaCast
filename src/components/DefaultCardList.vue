@@ -4,7 +4,7 @@
   <div class="cards-holder">
     <div
       class="card-holder loading-card"
-      v-for="(n, index) in 18"
+      v-for="(n, index) in 20"
       :key="index"
     ></div>
   </div>
