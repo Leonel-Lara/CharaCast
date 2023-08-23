@@ -18,6 +18,7 @@ const $toast = inject("$toast");
 
 const emit = defineEmits(["closeMainFilter"]);
 
+const P = new Pokedex();
 const loading = ref(true);
 const loadingMore = ref(false);
 const loadingFilterName = ref(false);
@@ -29,7 +30,6 @@ const pokemons = ref([]);
 const pokemonsName = ref([]);
 const quantityPokemons = ref(null);
 const tabs = ref(["Stats", "About", "Move"]);
-const P = new Pokedex();
 const pokemonNameMoves = ref([]);
 const pokemonFiltredMoves = ref([]);
 const showModal = ref(false);
