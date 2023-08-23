@@ -166,6 +166,9 @@ img {
   &.icon {
     padding: 12px 24px;
     gap: 0.75rem;
+    .material-design-icon {
+      display: flex;
+    }
   }
 }
 
@@ -179,10 +182,7 @@ img {
     display: block;
     font-family: fontLight;
     font-size: 0.9rem;
-    color: var(--secondary);
-    .blue {
-      color: var(--blue);
-    }
+    color: var(--primary);
   }
 
   input,
@@ -195,8 +195,9 @@ img {
     height: 44px;
     border-radius: 6px;
     padding: 0.25rem 0.85rem;
-    background-color: #eaeaea;
-    color: var(--secondary);
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px solid #833396;
     &::placeholder {
       color: var(--dark5);
       font-family: fontLight;
@@ -209,14 +210,15 @@ img {
   textarea {
     position: relative;
     width: 100%;
-    height: 90px;
+    height: 150px;
     padding: 0.65rem 0.85rem;
     border-radius: 6px;
-    background-color: #eaeaea;
+    background-color: transparent;
     font-family: fontRegular;
     font-size: 1rem;
     color: var(--primary);
     resize: none;
+    border: 1px solid #833396;
     &::-webkit-scrollbar {
       width: 0.3em;
     }
@@ -275,7 +277,7 @@ img {
   position: relative;
   width: 100%;
   height: 1px;
-  margin: 35px auto;
+  margin: 60px auto;
   background-color: #e9e9e9;
 }
 
@@ -284,6 +286,18 @@ img {
   position: relative;
   width: 100%;
   align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .loading {

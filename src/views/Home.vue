@@ -5,6 +5,7 @@ import BannerList from "@/components/BannerList";
 import Menu from "@/baseComponents/Menu";
 import PokemonList from "@/components/PokemonList";
 import RickAndMortyList from "@/components/RickAndMortyList";
+import Form from "@/components/Form";
 
 const bannerToShow = ref(0);
 const openFilter = ref(false);
@@ -61,6 +62,8 @@ const closeMainFilter = () => {
       :openFilter="openFilter"
       @closeMainFilter="closeMainFilter"
     />
+    <div class="divider"></div>
+    <Form />
   </div>
 </template>
 
