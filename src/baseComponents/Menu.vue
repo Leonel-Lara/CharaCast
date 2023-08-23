@@ -1,18 +1,70 @@
 <script setup>
+import { ref } from "vue";
+
 import FilterIcon from "vue-material-design-icons/FilterMultipleOutline";
 import SearchIcon from "vue-material-design-icons/Magnify";
+import CloseIcon from "vue-material-design-icons/Close";
+
+const filterName = ref("");
+const showCloseIcon = ref(false);
+
+const emit = defineEmits([
+  "startFilterCharacterName",
+  "stopFilterCharacterName",
+  "openFilter",
+]);
+
+const startFilterCharacterName = () => {
+  if (filterName.value.length < 1) {
+    stopFilterCharacterName();
+    return;
+  }
+  showCloseIcon.value = true;
+  emit("startFilterCharacterName", filterName.value.toLowerCase());
+};
+const stopFilterCharacterName = () => {
+  showCloseIcon.value = false;
+  filterName.value = "";
+  emit("stopFilterCharacterName", filterName.value);
+};
+
+const openFilter = () => {
+  emit("openFilter");
+};
 </script>
 
 <template>
   <div class="card">
-    <img src="../assets/images/logo-vertical-cut.png" alt="logo" />
-    <div class="btn border icon">
-      <span>Filter characters</span>
+    <img
+      class="mobile-hidden"
+      src="../assets/images/logo-vertical-cut.png"
+      alt="logo"
+    />
+    <div @click="openFilter" class="btn border icon">
+      <span class="mobile-hidden">Filter characters</span>
       <FilterIcon fillColor="#000" />
     </div>
     <div class="input-item">
-      <input placeholder="Search by name" type="text" />
-      <SearchIcon class="search-icon" fillColor="#000" :size="28" />
+      <input
+        @keypress.enter="startFilterCharacterName"
+        placeholder="Search by name"
+        type="text"
+        v-model="filterName"
+      />
+      <SearchIcon
+        v-if="!showCloseIcon"
+        @click="startFilterCharacterName"
+        class="icon"
+        fillColor="#000"
+        :size="26"
+      />
+      <CloseIcon
+        v-else
+        @click="stopFilterCharacterName"
+        class="icon"
+        fillColor="#000"
+        :size="26"
+      />
     </div>
   </div>
 </template>
@@ -31,18 +83,25 @@ import SearchIcon from "vue-material-design-icons/Magnify";
   align-items: center;
   justify-content: space-between;
   z-index: 2;
+  @media only screen and (max-width: 720px) {
+    top: -6px;
+    padding: 1.2rem 1.8rem;
+  }
 }
 
 img {
   position: relative;
-  width: 25%;
+  width: 20%;
 }
 
 .input-item {
   width: 25%;
   margin: 0;
+  @media only screen and (max-width: 720px) {
+    width: 70%;
+  }
   input {
-    border: 1px solid #CECECE;
+    border: 1px solid #cecece;
     background-color: transparent;
     color: #000;
     padding: 0.25rem 3rem 0.25rem 0.85rem;
@@ -50,8 +109,11 @@ img {
     &::placeholder {
       font-size: 0.95rem;
     }
+    @media only screen and (max-width: 720px) {
+      padding: 0.12rem 2.5rem 0.12rem 0.8rem;
+    }
   }
-  .search-icon {
+  .icon {
     display: flex;
     position: absolute;
     top: 50%;
@@ -64,5 +126,16 @@ img {
 .btn {
   margin: 0;
   padding: 10px 24px;
+  .material-design-icon {
+    display: flex;
+  }
+  @media only screen and (max-width: 720px) {
+    padding: 4px 16px;
+  }
+}
+@media only screen and (max-width: 720px) {
+  .mobile-hidden {
+    display: none !important;
+  }
 }
 </style>

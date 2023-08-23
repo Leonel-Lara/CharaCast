@@ -6,8 +6,8 @@
 
 <style lang="scss">
 :root {
-  --primary: #eee;
-  --secondary: #131313;
+  --primary: #131313;
+  --secondary: #eee;
   --green1: #488b3c;
   --yellow1: #f9cc00;
   --blue1: #004fea;
@@ -43,7 +43,7 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: var(--secondary);
+  background-color: var(--primary);
   outline: 0px solid slategrey;
 }
 
@@ -125,16 +125,22 @@ img {
 }
 .swiper-button-next {
   right: 50px !important;
+  @media only screen and (max-width: 720px) {
+    right: 25px !important;
+  }
 }
 .swiper-button-prev {
   left: 50px !important;
+  @media only screen and (max-width: 720px) {
+    left: 25px !important;
+  }
 }
 
 .btn {
   position: relative;
   padding: 16px 24px;
   border-radius: 0.6rem;
-  background-color: var(--secondary);
+  background-color: var(--primary);
   margin: 25px auto 0 auto;
   cursor: pointer;
   display: flex;
@@ -142,6 +148,9 @@ img {
   align-items: center;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
   transition: transform 0.25s ease;
+  span {
+    color: #fff;
+  }
   &:hover {
     transform: translateY(-3px);
   }
@@ -170,7 +179,7 @@ img {
     display: block;
     font-family: fontLight;
     font-size: 0.9rem;
-    color: var(--primary);
+    color: var(--secondary);
     .blue {
       color: var(--blue);
     }
@@ -187,7 +196,7 @@ img {
     border-radius: 6px;
     padding: 0.25rem 0.85rem;
     background-color: #eaeaea;
-    color: var(--primary);
+    color: var(--secondary);
     &::placeholder {
       color: var(--dark5);
       font-family: fontLight;
@@ -227,7 +236,7 @@ img {
 .container {
   position: relative;
   width: 80%;
-  max-width: 1300px;
+  max-width: 1340px;
   margin: 0 auto;
   @media only screen and (max-width: 1159px) {
     width: 90%;
@@ -270,6 +279,13 @@ img {
   background-color: #e9e9e9;
 }
 
+.flex {
+  display: flex;
+  position: relative;
+  width: 100%;
+  align-items: center;
+}
+
 .loading {
   animation-duration: 0.8s;
   animation-iteration-count: infinite;
@@ -277,7 +293,7 @@ img {
   animation-timing-function: linear;
   height: 22px;
   width: 22px;
-  border: 2px solid var(--primary);
+  border: 2px solid var(--secondary);
   border-right-color: transparent;
   border-radius: 50%;
   display: inline-block;

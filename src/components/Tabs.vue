@@ -58,10 +58,10 @@ const setCss = (tabsLength) => {
     obj.style.width = `${100 / tabsLength}%`;
     obj.style.color = `#b6b6b6`;
   });
-  tabItems[props.selectedTab - 1].style.color = props.tabColor;
+  tabItems[props.selectedTab - 1].style.color = props?.tabColor;
 
   activeBorder.value.style.width = `${100 / tabsLength}%`;
-  activeBorder.value.style.background = props.tabColor;
+  activeBorder.value.style.background = props?.tabColor;
   activeBorder.value.style.transform = `translateX(${
     100 * (props.selectedTab - 1)
   }%)`;
@@ -100,6 +100,7 @@ const setActiveTab = (index) => {
     height: 1px;
     left: 0;
     bottom: -1px;
+    background-color: var(--green1);
     transition: width 0.25s ease, transform 0.25s ease;
   }
   .tab {
@@ -110,6 +111,7 @@ const setActiveTab = (index) => {
     justify-content: center;
     align-items: center;
     text-align: center;
+    color: var(--green1);
     cursor: pointer;
     transition: color 0.2s ease-in-out;
   }

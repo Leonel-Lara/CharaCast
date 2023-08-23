@@ -100,7 +100,6 @@ const close = () => {
       justify-content: center;
       align-items: center;
       gap: 1rem;
-      margin-right: 1rem;
       &.align-left {
         justify-content: flex-start;
         text-align: left;
