@@ -350,6 +350,7 @@ const getPokemonsDetailsByFilterName = (filter) => {
     .catch((err) => {
       console.log(err);
       errorAlert("We couldn't find any Pokémon");
+      quantityPokemons.value = 0;
     })
     .finally(() => {
       setTimeout(() => {

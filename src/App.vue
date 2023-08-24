@@ -195,9 +195,8 @@ img {
     height: 44px;
     border-radius: 6px;
     padding: 0.25rem 0.85rem;
-    background-color: transparent;
     color: var(--primary);
-    border: 1px solid #833396;
+    background-color: #eeeeee;
     &::placeholder {
       color: var(--dark5);
       font-family: fontLight;
@@ -213,12 +212,11 @@ img {
     height: 150px;
     padding: 0.65rem 0.85rem;
     border-radius: 6px;
-    background-color: transparent;
+    background-color: #eeeeee;
     font-family: fontRegular;
     font-size: 1rem;
     color: var(--primary);
     resize: none;
-    border: 1px solid #833396;
     &::-webkit-scrollbar {
       width: 0.3em;
     }
