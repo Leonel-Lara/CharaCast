@@ -220,7 +220,7 @@ const getPokemonsDetails = () => {
         ...Object.values(response).map((pokemon) => {
           const defaultPokemon = {
             id: pokemon.id,
-            name: pokemon.name,
+            name: pokemon.name[0].toUpperCase() + pokemon.name.substr(1),
             image: pokemon.sprites.other.dream_world.front_default
               ? pokemon.sprites.other.dream_world.front_default
               : pokemon.sprites.other["official-artwork"].front_default,
@@ -331,7 +331,7 @@ const getPokemonsDetailsByFilterName = (filter) => {
     .then((response) => {
       const defaultPokemon = {
         id: response.id,
-        name: response.name,
+        name: response.name[0].toUpperCase() + response.name.substr(1),
         image: response.sprites.other.dream_world.front_default
           ? response.sprites.other.dream_world.front_default
           : response.sprites.other["official-artwork"].front_default,
@@ -430,7 +430,7 @@ const getPokemonSpecies = (pokemon) => {
         ? response.pal_park_encounters[0].area.name
         : "undefined";
       result.shape = response?.shape?.name ? response.shape.name : "undefined";
-      result.weight = pokemon?.weight ? pokemon.weight : "undefined";
+      result.weight = pokemon?.weight ? pokemon.weight / 10 : "undefined";
     })
     .catch((error) => {
       console.log("There was an ERROR: ", error);
@@ -568,7 +568,7 @@ const errorAlert = (msg) => {
                   >{{ pokemon.species.parkEncounters }}
                 </li>
                 <li><span>Species:</span>{{ pokemon.species.shape }}</li>
-                <li><span>Weight:</span>{{ pokemon.species.weight }}</li>
+                <li><span>Weight:</span>{{ pokemon.species.weight }}kg</li>
               </ul>
               <span class="desc">{{ pokemon.species.text }}</span>
             </div>
@@ -616,6 +616,7 @@ const errorAlert = (msg) => {
     border-radius: 12px;
     gap: 8px;
     cursor: pointer;
+    transition: all 0.25s ease-in-out;
     img {
       filter: grayscale(100%);
     }
@@ -645,6 +646,9 @@ const errorAlert = (msg) => {
       color: var(--dark4);
       font-family: fontMedium;
     }
+    @media only screen and (max-width: 720px) {
+      justify-content: center;
+    }
   }
   .btn {
     margin: 40px auto 0 auto;
@@ -661,7 +665,8 @@ const errorAlert = (msg) => {
     grid-template-columns: 1fr 1fr 1fr;
   }
   @media only screen and (max-width: 900px) {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 0.5fr));
+    justify-content: center;
   }
 }
 

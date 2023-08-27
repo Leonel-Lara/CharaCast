@@ -41,7 +41,7 @@ const openFilter = () => {
       alt="logo"
     />
     <div @click="openFilter" class="btn border icon">
-      <span class="mobile-hidden">Filter characters</span>
+      <span>Filter characters</span>
       <FilterIcon fillColor="#000" />
     </div>
     <div class="input-item">
@@ -84,8 +84,14 @@ const openFilter = () => {
   justify-content: space-between;
   z-index: 2;
   @media only screen and (max-width: 720px) {
-    top: -6px;
+    top: 0;
     padding: 1.2rem 1.8rem;
+    background-color: transparent;
+    border-radius: none;
+    box-shadow: none;
+    border: none;
+    flex-direction: column;
+    gap: 20px;
   }
 }
 
@@ -130,7 +136,7 @@ img {
     display: flex;
   }
   @media only screen and (max-width: 720px) {
-    padding: 4px 16px;
+    width: 70%;
   }
 }
 @media only screen and (max-width: 720px) {

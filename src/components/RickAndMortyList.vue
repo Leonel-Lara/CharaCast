@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch, inject } from "vue";
 
 import analyze from "rgbaster";
 
@@ -12,31 +12,77 @@ import Tabs from "@/components/Tabs";
 import OpenIcon from "vue-material-design-icons/OpenInNew";
 import PlusIcon from "vue-material-design-icons/Plus";
 
-const loading = ref(true);
+const swal = inject("$swal");
+const $toast = inject("$toast");
+
+const emit = defineEmits(["closeMainFilter"]);
+
+const loading = ref(false);
 const loadingMore = ref(false);
-const urlCharacter = ref("character?page=");
 const page = ref(1);
 const allCharactersFeteched = ref(false);
 const tabs = ref(["About", "Episodes"]);
 const characters = ref([]);
 const characterNameEpisodes = ref("");
 const characterEpisodes = ref([]);
+const quantityCharacters = ref(null);
 const showModal = ref(false);
+const nameFilter = ref("");
+const statusFilter = ref("");
+const genderFilter = ref("");
+const filterStatus = ref([
+  { name: "Alive", image: require("../assets/images/icons/happy.svg") },
+  { name: "Dead", image: require("../assets/images/icons/dead.svg") },
+  { name: "Unknown", image: require("../assets/images/icons/help-green.svg") },
+]);
+const filterGenders = ref([
+  { name: "Female", image: require("../assets/images/icons/female.svg") },
+  { name: "Male", image: require("../assets/images/icons/male.svg") },
+  {
+    name: "Genderless",
+    image: require("../assets/images/icons/genderless.svg"),
+  },
+  { name: "Unknown", image: require("../assets/images/icons/help-blue.svg") },
+]);
 
 onMounted(() => {
   getCharacters();
 });
+
+const props = defineProps({
+  openFilter: {
+    type: Boolean,
+    default: false,
+  },
+  filterName: {
+    type: String,
+    default: "",
+  },
+});
+
+watch(
+  () => props.filterName,
+  (val) => {
+    nameFilter.value = val;
+    allCharactersFeteched.value = false;
+    confirmFilter();
+  }
+);
 
 const changeTab = (tab, character) => {
   character.selectedTab = tab;
 };
 
 const getCharacters = () => {
-  if (loadingMore.value) return;
+  if (loading.value || loadingMore.value) return;
+
   if (page.value > 1) loadingMore.value = true;
+  else loading.value = true;
 
   httpRickAndMorty
-    .get(urlCharacter.value + page.value)
+    .get(
+      `character?page=${page.value}&name=${nameFilter.value}&status=${statusFilter.value}&gender=${genderFilter.value}`
+    )
     .then((response) => {
       characters.value = [
         ...characters.value,
@@ -61,11 +107,17 @@ const getCharacters = () => {
         }),
       ];
       characters.value.map((el) => getDominantColor(el));
+      quantityCharacters.value = response?.data?.info?.count;
       if (response?.data?.info?.next) page.value++;
       else allCharactersFeteched.value = true;
     })
     .catch((err) => {
       console.log(err);
+      if (err.response.status == 404) {
+        errorAlert("We couldn't find any Pokémon");
+        quantityCharacters.value = 0;
+        allCharactersFeteched.value = true;
+      }
     })
     .finally(() => {
       setTimeout(() => {
@@ -81,7 +133,8 @@ const getEpisodes = (characterName, episodesId) => {
   httpRickAndMorty
     .get(`episode/${episodesId}`)
     .then((response) => {
-      characterEpisodes.value = response?.data;
+      if (response?.data?.length > 1) characterEpisodes.value = response?.data;
+      else characterEpisodes.value.push(response?.data);
     })
     .catch((err) => {
       console.log(err);
@@ -89,6 +142,27 @@ const getEpisodes = (characterName, episodesId) => {
     .finally(() => {
       showModal.value = true;
     });
+};
+
+const selectFilter = (type, filter) => {
+  if (type == "stats")
+    statusFilter.value =
+      statusFilter.value == filter.toLowerCase() ? "" : filter.toLowerCase();
+  else
+    genderFilter.value =
+      genderFilter.value == filter.toLowerCase() ? "" : filter.toLowerCase();
+};
+
+const confirmFilter = () => {
+  page.value = 1;
+  characters.value = [];
+  allCharactersFeteched.value = false;
+  getCharacters();
+  closeFilter();
+};
+
+const closeFilter = () => {
+  emit("closeMainFilter");
 };
 
 const closeModal = () => {
@@ -103,6 +177,16 @@ const getDominantColor = async (character) => {
   });
   character.dominantColor = result[0].color;
 };
+
+const errorAlert = (msg) => {
+  swal.fire({
+    position: "center",
+    icon: "warning",
+    title: "Ops...",
+    text: msg,
+    showConfirmButton: true,
+  });
+};
 </script>
 
 <template>
@@ -110,10 +194,51 @@ const getDominantColor = async (character) => {
     enter-active-class="animated fadeIn"
     leave-active-class="animated fadeOut"
   >
+    <div @click="closeFilter" v-show="openFilter" class="bg-cover"></div>
+  </transition>
+  <Modal @close="closeFilter" v-show="openFilter">
+    <template v-slot:title>Filter characters</template>
+    <span class="filter-title">Status</span>
+    <div class="filter-holder">
+      <div
+        v-for="(stats, index) in filterStatus"
+        :key="`stats${index}`"
+        @click="selectFilter('stats', stats.name)"
+        class="filter"
+        :class="{ 'stats-active': statusFilter == stats.name.toLowerCase() }"
+      >
+        <img :src="stats.image" alt="stats" />
+        <span>{{ stats.name }}</span>
+      </div>
+    </div>
+    <span class="filter-title">Gender</span>
+    <div class="filter-holder">
+      <div
+        v-for="(gender, index) in filterGenders"
+        :key="`gender${index}`"
+        @click="selectFilter('gender', gender.name)"
+        class="filter"
+        :class="{ 'gender-active': genderFilter == gender.name.toLowerCase() }"
+      >
+        <img :src="gender.image" alt="gender" />
+        <span>{{ gender.name }}</span>
+      </div>
+    </div>
+
+    <div class="flex">
+      <div @click="confirmFilter" class="btn">
+        <span>Confirmar</span>
+      </div>
+    </div>
+  </Modal>
+  <transition
+    enter-active-class="animated fadeIn"
+    leave-active-class="animated fadeOut"
+  >
     <div @click="closeModal" v-show="showModal" class="bg-cover"></div>
   </transition>
   <Modal @close="closeModal" v-show="showModal">
-    <template v-slot:title>All episodes - {{ characterNameEpisodes }}</template>
+    <template v-slot:title>All {{ characterNameEpisodes }} episodes</template>
     <ul>
       <li v-for="(episode, index) in characterEpisodes" :key="index">
         <span>{{ episode.name }} -> </span>{{ episode.air_date }} ->
@@ -123,6 +248,10 @@ const getDominantColor = async (character) => {
   </Modal>
   <DefaultCardList v-if="loading" />
   <div v-else class="character-holder">
+    <div class="quantity-holder">
+      <img src="../assets/images/portal.png" alt="portal" />
+      <span>{{ quantityCharacters }} Characters</span>
+    </div>
     <div class="cards-holder">
       <div
         v-for="character in characters"
@@ -185,6 +314,55 @@ const getDominantColor = async (character) => {
 </template>
 
 <style lang="scss" scoped>
+.filter-title {
+  font-family: fontRegular;
+  font-size: 1rem;
+}
+.filter-holder {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1.6rem;
+  padding: 1.2rem 0;
+  .filter {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 0px;
+    border: 1px solid var(--secondary);
+    border-radius: 12px;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+    img {
+      width: 28px;
+      filter: grayscale(100%);
+    }
+    span {
+      color: #707070;
+    }
+    &.stats-active {
+      border: 1px solid var(--green1);
+      img {
+        filter: grayscale(0%);
+      }
+      span {
+        color: var(--green1);
+      }
+    }
+    &.gender-active {
+      border: 1px solid #7bb1de;
+      img {
+        filter: grayscale(0%);
+      }
+      span {
+        color: #7bb1de;
+      }
+    }
+  }
+}
 .character-holder {
   position: relative;
   width: 100%;
@@ -192,9 +370,30 @@ const getDominantColor = async (character) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
+  margin-top: 20px;
+  gap: 40px;
   .btn {
     margin: 40px auto 0 auto;
+  }
+}
+.quantity-holder {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  img {
+    position: relative;
+    width: 35px;
+  }
+  span {
+    font-size: 1.2rem;
+    color: var(--dark4);
+    font-family: fontMedium;
+  }
+  @media only screen and (max-width: 720px) {
+    justify-content: center;
   }
 }
 .cards-holder {
@@ -204,8 +403,12 @@ const getDominantColor = async (character) => {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   justify-content: space-between;
   gap: 4em;
-  @media only screen and (max-width: 720px) {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  @media only screen and (min-width: 901px) and (max-width: 1300px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  @media only screen and (max-width: 900px) {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 0.5fr));
+    justify-content: center;
   }
 }
 
@@ -220,6 +423,9 @@ const getDominantColor = async (character) => {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  @media only screen and (max-width: 900px) {
+    padding-top: 1rem;
+  }
   .card-name {
     text-align: center;
     color: #fff;

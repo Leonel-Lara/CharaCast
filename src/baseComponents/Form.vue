@@ -37,7 +37,7 @@ import SendIcon from "vue-material-design-icons/Send";
           <div class="btn icon">
             <span>Send</span>
             <SendIcon fillColor="#fff" />
-            <div v-show="loadingMore" class="loading black"></div>
+            <!-- <div v-show="loadingMore" class="loading black"></div> -->
           </div>
         </div>
       </div>
@@ -47,40 +47,6 @@ import SendIcon from "vue-material-design-icons/Send";
       src="../assets/images/rick-and-morty-form.png"
       alt="rick and mory"
     />
-    <!-- <span class="title">
-      Did you like our <span class="blue">platform</span>? <br />
-        Give us <span class="purple">feedback</span>, or get in touch!
-    </span>
-    <div class="form-holder">
-      <img src="../assets/images/contact-img.svg" alt="contact" />
-      <div class="form">
-        <div class="flex flex-between">
-          <div class="input-item">
-            <span>Name</span>
-            <input type="text" />
-          </div>
-          <div class="input-item">
-            <span>Email *</span>
-            <input type="mail" />
-          </div>
-        </div>
-        <div class="input-item">
-          <span>Message *</span>
-          <textarea></textarea>
-        </div>
-        <div class="footer-form">
-          <div class="image-holder">
-            <img src="../assets/images/whatsapp.png" alt="whatsapp" />
-            <img src="../assets/images/github.png" alt="github" />
-          </div>
-          <div class="btn border icon">
-            <span>Send</span>
-            <SendIcon fillColor="#833396" />
-            <div v-show="loadingMore" class="loading black"></div>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -94,12 +60,16 @@ import SendIcon from "vue-material-design-icons/Send";
   padding-bottom: 2.6rem;
   .pokemon {
     position: absolute;
+    top: 50%;
     left: 0;
+    transform: translateY(-50%);
     width: 250px;
   }
   .rick {
     position: absolute;
+    top: 50%;
     right: 0px;
+    transform: translateY(-50%);
     width: 220px;
   }
   .card {
