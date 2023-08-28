@@ -1,5 +1,13 @@
 <script setup>
+import { inject } from "vue";
+
 import SendIcon from "vue-material-design-icons/Send";
+
+const $toast = inject("$toast");
+
+const sendForm = () => {
+  // $toast({ text: "Menssage send!" });
+};
 </script>
 
 <template>
@@ -141,7 +149,6 @@ import SendIcon from "vue-material-design-icons/Send";
     }
   }
 }
-
 .red {
   color: #ef3e32;
   font-size: 1.3rem;

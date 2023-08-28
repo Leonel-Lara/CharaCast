@@ -14,7 +14,6 @@ import EyeIcon from "vue-material-design-icons/EyeOutline";
 import PlusIcon from "vue-material-design-icons/Plus";
 
 const swal = inject("$swal");
-const $toast = inject("$toast");
 
 const emit = defineEmits(["closeMainFilter"]);
 
@@ -299,7 +298,6 @@ const confirmFilterType = () => {
       loading.value = true;
       getPokemonsDetails();
       quantityPokemons.value = pokemonsName.value.length;
-      $toast({ text: "Successfully filtered!" });
     })
     .catch((err) => {
       console.log(err);
@@ -345,7 +343,6 @@ const getPokemonsDetailsByFilterName = (filter) => {
       if (defaultPokemon.image) getDominantColor(defaultPokemon);
       pokemons.value.push(defaultPokemon);
       quantityPokemons.value = pokemons.value.length;
-      $toast({ text: "Successfully filtered!" });
     })
     .catch((err) => {
       console.log(err);
@@ -508,7 +505,7 @@ const errorAlert = (msg) => {
     class="animated fadeInUp"
     style="animation-delay: 600ms"
   />
-  <div v-else class="pokemon-holder">
+  <div v-else class="character-holder">
     <div v-show="loadingFilterName" class="loading black"></div>
     <div v-show="!loadingFilterName" class="quantity-holder">
       <img src="../assets/images/icons/icon-poke-red.svg" alt="pokeball" />
@@ -599,231 +596,102 @@ const errorAlert = (msg) => {
 </template>
 
 <style lang="scss" scoped>
-.filter-holder {
-  position: relative;
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 1.6rem;
-  padding-bottom: 1.2rem;
-  .filter {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 6px 0px;
-    border: 1px solid var(--secondary);
-    border-radius: 12px;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.25s ease-in-out;
-    img {
-      filter: grayscale(100%);
-    }
-    span {
-      color: #707070;
-    }
-  }
+.pokebola {
+  position: absolute;
+  top: -40px;
+  left: 10px;
+  width: 25px;
+  opacity: 0.2;
 }
-.pokemon-holder {
+.stats {
   position: relative;
-  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  gap: 40px;
-  .quantity-holder {
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: 14px 16px;
+  .item-holder {
     position: relative;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 16px;
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 12px;
     span {
-      font-size: 1.2rem;
-      color: var(--dark4);
+      font-size: 0.8rem;
+      color: #767676;
       font-family: fontMedium;
     }
-    @media only screen and (max-width: 720px) {
-      justify-content: center;
+    .bar-holder {
+      position: relative;
+      width: 60%;
+      height: 100%;
+      background: var(--secondary);
+      border-radius: 10px;
+      .bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        max-width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        background-color: var(--green1);
+      }
     }
   }
-  .btn {
-    margin: 40px auto 0 auto;
-  }
 }
-.cards-holder {
+.species-holder {
   position: relative;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  justify-content: space-between;
-  gap: 4em;
-  @media only screen and (min-width: 901px) and (max-width: 1300px) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  @media only screen and (max-width: 900px) {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 0.5fr));
-    justify-content: center;
-  }
-}
-
-.card-holder {
-  position: relative;
-  height: 440px;
-  background-color: var(--green1);
-  border-radius: 12px;
-  box-shadow: var(--box-shadow-default);
-  padding-top: 1.2rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  @media only screen and (max-width: 900px) {
-    padding-top: 1rem;
-  }
-  .card-name {
-    text-align: center;
-    color: #fff;
-    font-size: 1.6rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .card-img {
-    position: relative;
-    bottom: -10px;
-    width: 160px;
-    height: 160px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-    img {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-  }
-  .details-holder {
-    position: relative;
+  text-align: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: 14px 16px;
+  ul {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 220px;
-    background-color: #fff;
-    border-radius: 20px 20px 12px 12px;
-    .pokebola {
-      position: absolute;
-      top: -40px;
-      left: 10px;
-      width: 25px;
-      opacity: 0.2;
-    }
-    .details {
-      position: relative;
-      width: 100%;
-      height: 77%;
+    gap: 5px;
+    flex-wrap: wrap;
+    li {
       display: flex;
-      justify-content: flex-start;
-      align-items: flex-start;
-
-      .stats {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
-        width: 100%;
-        height: 100%;
-        padding: 14px 16px;
-        .item-holder {
-          position: relative;
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          height: 12px;
-          span {
-            font-size: 0.8rem;
-            color: #767676;
-            font-family: fontMedium;
-          }
-          .bar-holder {
-            position: relative;
-            width: 60%;
-            height: 100%;
-            background: var(--secondary);
-            border-radius: 10px;
-            .bar {
-              position: absolute;
-              top: 0;
-              left: 0;
-              max-width: 100%;
-              height: 100%;
-              border-radius: 10px;
-              background-color: var(--green1);
-            }
-          }
-        }
+      align-items: center;
+      gap: 10px;
+      span {
+        font-size: 0.85rem;
+        font-family: fontBold;
+        color: #767676;
       }
-      .species-holder {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        text-align: flex-start;
-        width: 100%;
-        height: 100%;
-        padding: 14px 16px;
-        ul {
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-          flex-wrap: wrap;
-          li {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            span {
-              font-size: 0.85rem;
-              font-family: fontBold;
-              color: #767676;
-            }
-            font-size: 0.85rem;
-            color: #767676;
-          }
-        }
-        .desc {
-          margin-top: 10px;
-          font-size: 0.85rem;
-          color: #767676;
-        }
-      }
-      .move-holder {
-        position: relative;
-        display: flex;
-        width: 100%;
-        height: 100%;
-        justify-content: center;
-        align-items: center;
-        .btn {
-          margin: 0;
-          padding: 8px 12px;
-          border: 1px solid #515151;
-          span {
-            font-size: 0.85rem;
-            font-family: fontMedium;
-            color: #515151;
-          }
-          .material-design-icon {
-            display: flex;
-          }
-        }
-      }
+      font-size: 0.85rem;
+      color: #767676;
+    }
+  }
+  .desc {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #767676;
+  }
+}
+.move-holder {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  .btn {
+    margin: 0;
+    padding: 8px 12px;
+    border: 1px solid #515151;
+    span {
+      font-size: 0.85rem;
+      font-family: fontMedium;
+      color: #515151;
+    }
+    .material-design-icon {
+      display: flex;
     }
   }
 }

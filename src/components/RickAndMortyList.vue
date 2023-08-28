@@ -13,7 +13,6 @@ import OpenIcon from "vue-material-design-icons/OpenInNew";
 import PlusIcon from "vue-material-design-icons/Plus";
 
 const swal = inject("$swal");
-const $toast = inject("$toast");
 
 const emit = defineEmits(["closeMainFilter"]);
 
@@ -319,29 +318,11 @@ const errorAlert = (msg) => {
   font-size: 1rem;
 }
 .filter-holder {
-  position: relative;
-  width: 100%;
-  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 1.6rem;
-  padding: 1.2rem 0;
+  padding-bottom: 1.2rem;
   .filter {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 6px 0px;
-    border: 1px solid var(--secondary);
-    border-radius: 12px;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.25s ease-in-out;
     img {
       width: 28px;
-      filter: grayscale(100%);
-    }
-    span {
-      color: #707070;
     }
     &.stats-active {
       border: 1px solid var(--green1);
@@ -363,153 +344,55 @@ const errorAlert = (msg) => {
     }
   }
 }
-.character-holder {
-  position: relative;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  gap: 40px;
-  .btn {
-    margin: 40px auto 0 auto;
-  }
-}
 .quantity-holder {
-  position: relative;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
   img {
     position: relative;
     width: 35px;
   }
-  span {
-    font-size: 1.2rem;
-    color: var(--dark4);
-    font-family: fontMedium;
-  }
-  @media only screen and (max-width: 720px) {
-    justify-content: center;
+}
+.card-img {
+  border-radius: 50%;
+  img {
+    border-radius: 50%;
   }
 }
-.cards-holder {
+.about {
   position: relative;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  justify-content: space-between;
-  gap: 4em;
-  @media only screen and (min-width: 901px) and (max-width: 1300px) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  @media only screen and (max-width: 900px) {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 0.5fr));
-    justify-content: center;
-  }
-}
-
-.card-holder {
-  position: relative;
-  height: 440px;
-  background-color: var(--green1);
-  border-radius: 12px;
-  box-shadow: var(--box-shadow-default);
-  padding-top: 1.2em;
   display: flex;
   flex-direction: column;
+  text-align: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: 14px 16px;
+}
+.episode-holder {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  @media only screen and (max-width: 900px) {
-    padding-top: 1rem;
-  }
-  .card-name {
-    text-align: center;
-    color: #fff;
-    font-size: 1.6rem;
-    width: 90%;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    cursor: default;
-  }
-  .card-img {
-    position: relative;
-    bottom: -10px;
-    width: 160px;
-    height: 160px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-    border-radius: 50%;
-    img {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: contain;
+  .btn {
+    margin: 0;
+    padding: 8px 12px;
+    border: 1px solid #515151;
+    span {
+      font-size: 0.85rem;
+      font-family: fontMedium;
+      color: #515151;
     }
-  }
-  .details-holder {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 220px;
-    background-color: #fff;
-    border-radius: 20px 20px 12px 12px;
-    .portal {
-      position: absolute;
-      top: -40px;
-      left: 10px;
-      width: 35px;
-      opacity: 0.6;
-    }
-    .details {
-      position: relative;
-      width: 100%;
-      height: 77%;
+    .material-design-icon {
       display: flex;
-      justify-content: flex-start;
-      align-items: flex-start;
-
-      .about {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        text-align: flex-start;
-        width: 100%;
-        height: 100%;
-        padding: 14px 16px;
-      }
-      .episode-holder {
-        position: relative;
-        display: flex;
-        width: 100%;
-        height: 100%;
-        justify-content: center;
-        align-items: center;
-        .btn {
-          margin: 0;
-          padding: 8px 12px;
-          border: 1px solid #515151;
-          span {
-            font-size: 0.85rem;
-            font-family: fontMedium;
-            color: #515151;
-          }
-          .material-design-icon {
-            display: flex;
-          }
-        }
-      }
     }
   }
+}
+
+.portal {
+  position: absolute;
+  top: -40px;
+  left: 10px;
+  width: 35px;
+  opacity: 0.6;
 }
 
 ul {
