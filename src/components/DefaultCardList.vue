@@ -24,4 +24,7 @@
     background-color: hsl(210, 6%, 93%);
   }
 }
+.cards-holder {
+  margin-top: 60px;
+}
 </style>

@@ -104,7 +104,7 @@ img {
   width: 25%;
   margin: 0;
   @media only screen and (max-width: 720px) {
-    width: 70%;
+    width: 50%;
   }
   input {
     border: 1px solid #cecece;
@@ -136,7 +136,7 @@ img {
     display: flex;
   }
   @media only screen and (max-width: 720px) {
-    width: 70%;
+    width: 50%;
   }
 }
 @media only screen and (max-width: 720px) {

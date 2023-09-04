@@ -305,7 +305,7 @@ const errorAlert = (msg) => {
       @click="getCharacters"
       class="btn border icon"
     >
-      <span v-show="!loadingMore">Ver mais</span>
+      <span v-show="!loadingMore">Load more Characters</span>
       <PlusIcon v-show="!loadingMore" fillColor="#000" />
       <div v-show="loadingMore" class="loading black"></div>
     </div>

@@ -21,7 +21,6 @@ const P = new Pokedex();
 const loading = ref(true);
 const loadingMore = ref(false);
 const loadingFilterName = ref(false);
-const loadingFilterType = ref(false);
 const page = ref(1);
 const urlPokemon = ref("pokemon/?limit=20");
 const allPokemonsFeteched = ref(false);
@@ -208,43 +207,68 @@ const getPokemons = () => {
     .catch((err) => {
       console.log(err);
       errorAlert("Something went wrong, try again later.");
+      quantityPokemons.value = 0;
     });
 };
 
-const getPokemonsDetails = () => {
+const getPokemonsDetails = (filterName = "") => {
+  if (filterName) pokemonsName.value = filterName;
   P.getPokemonByName(pokemonsName.value)
     .then((response) => {
-      pokemons.value = [
-        ...pokemons.value,
-        ...Object.values(response).map((pokemon) => {
-          const defaultPokemon = {
-            id: pokemon.id,
-            name: pokemon.name[0].toUpperCase() + pokemon.name.substr(1),
-            image: pokemon.sprites.other.dream_world.front_default
-              ? pokemon.sprites.other.dream_world.front_default
-              : pokemon.sprites.other["official-artwork"].front_default,
-            stats: pokemon.stats.map((el) => {
-              return { name: el.stat.name, value: el.base_stat };
-            }),
-            selectedTab: 1,
-            moves: pokemon.moves,
-            species: getPokemonSpecies(pokemon),
-          };
-          return defaultPokemon;
-        }),
-      ];
-      pokemons.value.map((el) => {
-        if (el.image) getDominantColor(el);
-      });
+      if (!filterName) {
+        pokemons.value = [
+          ...pokemons.value,
+          ...Object.values(response).map((pokemon) => {
+            const defaultPokemon = {
+              id: pokemon.id,
+              name: pokemon.name[0].toUpperCase() + pokemon.name.substr(1),
+              image: pokemon.sprites.other.dream_world.front_default
+                ? pokemon.sprites.other.dream_world.front_default
+                : pokemon.sprites.other["official-artwork"].front_default,
+              stats: pokemon.stats.map((el) => {
+                return { name: el.stat.name, value: el.base_stat };
+              }),
+              selectedTab: 1,
+              moves: pokemon.moves,
+              // species: getPokemonSpecies(pokemon),
+            };
+            return defaultPokemon;
+          }),
+        ];
+        pokemons.value.map((el) => {
+          if (el.image) getDominantColor(el);
+        });
+      } else {
+        const defaultPokemon = {
+          id: response.id,
+          name: response.name[0].toUpperCase() + response.name.substr(1),
+          image: response.sprites.other.dream_world.front_default
+            ? response.sprites.other.dream_world.front_default
+            : response.sprites.other["official-artwork"].front_default,
+          stats: response.stats.map((el) => {
+            return { name: el.stat.name, value: el.base_stat };
+          }),
+          selectedTab: 1,
+          moves: response.moves,
+          // species: getPokemonSpecies(response),
+        };
+        pokemons.value.push(defaultPokemon);
+        if (defaultPokemon.image) getDominantColor(defaultPokemon);
+        quantityPokemons.value = pokemons.value.length;
+      }
     })
     .catch((err) => {
       console.log(err);
-      errorAlert("Something went wrong, try again later.");
+      if (err.response.status == 404)
+        errorAlert("We couldn't find any Pokémon");
+      else errorAlert("Something went wrong, try again later.");
+      quantityPokemons.value = 0;
     })
     .finally(() => {
       setTimeout(() => {
         loading.value = false;
         loadingMore.value = false;
+        loadingFilterName.value = false;
       }, 500);
     });
 };
@@ -273,8 +297,6 @@ const cleanCssFilterType = (id) => {
 };
 
 const confirmFilterType = () => {
-  if (loadingFilterType.value) return;
-
   pokemonsName.value = [];
   pokemons.value = [];
   allPokemonsFeteched.value = true;
@@ -296,21 +318,22 @@ const confirmFilterType = () => {
         return el.pokemon.name;
       });
       loading.value = true;
-      getPokemonsDetails();
       quantityPokemons.value = pokemonsName.value.length;
+      getPokemonsDetails();
     })
     .catch((err) => {
       console.log(err);
       errorAlert("Something went wrong, try again later.");
+      quantityPokemons.value = 0;
     });
 };
 
-const startFilterName = (filter) => {
+const startFilterName = (filterName) => {
   if (loadingFilterName.value) return;
   loadingFilterName.value = true;
   pokemons.value = [];
   allPokemonsFeteched.value = true;
-  getPokemonsDetailsByFilterName(filter);
+  getPokemonsDetails(filterName);
 };
 
 const stopFilterName = () => {
@@ -322,38 +345,6 @@ const stopFilterName = () => {
   setTimeout(() => {
     allPokemonsFeteched.value = false;
   }, 500);
-};
-
-const getPokemonsDetailsByFilterName = (filter) => {
-  P.getPokemonByName(filter)
-    .then((response) => {
-      const defaultPokemon = {
-        id: response.id,
-        name: response.name[0].toUpperCase() + response.name.substr(1),
-        image: response.sprites.other.dream_world.front_default
-          ? response.sprites.other.dream_world.front_default
-          : response.sprites.other["official-artwork"].front_default,
-        stats: response.stats.map((el) => {
-          return { name: el.stat.name, value: el.base_stat };
-        }),
-        selectedTab: 1,
-        moves: response.moves,
-        species: getPokemonSpecies(response),
-      };
-      if (defaultPokemon.image) getDominantColor(defaultPokemon);
-      pokemons.value.push(defaultPokemon);
-      quantityPokemons.value = pokemons.value.length;
-    })
-    .catch((err) => {
-      console.log(err);
-      errorAlert("We couldn't find any Pokémon");
-      quantityPokemons.value = 0;
-    })
-    .finally(() => {
-      setTimeout(() => {
-        loadingFilterName.value = false;
-      }, 500);
-    });
 };
 
 const setStatName = (stat) => {
@@ -476,8 +467,7 @@ const errorAlert = (msg) => {
     </div>
     <div class="flex">
       <div @click="confirmFilterType" class="btn">
-        <span v-show="!loadingFilterType">Confirmar</span>
-        <div v-show="loadingFilterType" class="loading white"></div>
+        <span>Confirmar</span>
       </div>
     </div>
   </Modal>
@@ -554,7 +544,7 @@ const errorAlert = (msg) => {
                 </div>
               </div>
             </div>
-            <div
+            <!-- <div
               v-if="pokemon.selectedTab == 2"
               class="species-holder style-scrollbar"
             >
@@ -568,8 +558,7 @@ const errorAlert = (msg) => {
                 <li><span>Weight:</span>{{ pokemon.species.weight }}kg</li>
               </ul>
               <span class="desc">{{ pokemon.species.text }}</span>
-            </div>
-
+            </div> -->
             <div v-if="pokemon.selectedTab == 3" class="move-holder">
               <div
                 @click="getPokemonMoves(pokemon.name, pokemon.moves)"
