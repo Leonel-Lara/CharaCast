@@ -8,14 +8,10 @@ import "swiper/css/navigation";
 
 const emit = defineEmits(["changedBanner"]);
 
-const props = defineProps({
-  banners: {
-    type: Array,
-    default: () => {
-      return [];
-    },
-  },
-});
+const banners = ref([
+  require("../assets/images/pokemon.png"),
+  require("../assets/images/rick-and-morty.png"),
+]);
 
 const swiperInstance = ref(null);
 

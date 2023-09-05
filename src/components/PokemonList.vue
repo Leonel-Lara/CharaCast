@@ -230,7 +230,7 @@ const getPokemonsDetails = (filterName = "") => {
               }),
               selectedTab: 1,
               moves: pokemon.moves,
-              // species: getPokemonSpecies(pokemon),
+              species: getPokemonSpecies(pokemon),
             };
             return defaultPokemon;
           }),
@@ -250,7 +250,7 @@ const getPokemonsDetails = (filterName = "") => {
           }),
           selectedTab: 1,
           moves: response.moves,
-          // species: getPokemonSpecies(response),
+          species: getPokemonSpecies(response),
         };
         pokemons.value.push(defaultPokemon);
         if (defaultPokemon.image) getDominantColor(defaultPokemon);

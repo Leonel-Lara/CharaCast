@@ -1,12 +1,76 @@
 <script setup>
-import { inject } from "vue";
+import { ref, inject } from "vue";
 
+import emailjs from "@emailjs/browser";
+
+import WhatsappIcon from "vue-material-design-icons/Whatsapp";
+import GitHubIcon from "vue-material-design-icons/Github";
 import SendIcon from "vue-material-design-icons/Send";
 
 const $toast = inject("$toast");
+const swal = inject("$swal");
 
-const sendForm = () => {
-  // $toast({ text: "Menssage send!" });
+const sending = ref(false);
+const form = ref("");
+const user = ref({
+  name: "",
+  email: "",
+  message: "",
+});
+
+const openWhatsapp = () => {
+  window.innerWidth > 719
+    ? window.open(
+        `https://web.whatsapp.com/send?phone=5519981010472&text=Olá! Estou no CharaCast. Gostaria de conversar sobre o site!`
+      )
+    : window.open(
+        `https://api.whatsapp.com/send?phone=5519981010472&text=Olá! Estou no CharaCast. Gostaria de conversar sobre o site!`
+      );
+};
+
+const checkForm = () => {
+  if (!user.value.name || !user.value.email || !user.value.message) {
+    errorAlert("Please, complete all mandatory information *");
+    return;
+  }
+
+  sendEmail();
+};
+
+const sendEmail = () => {
+  if (sending.value) return;
+  sending.value = true;
+
+  emailjs
+    .sendForm(
+      "service_351lsq7",
+      "template_lq0f1vu",
+      form.value,
+      "LBB3lKu7Zw3Vmleqq"
+    )
+    .then(
+      (result) => {
+        console.log("SUCCESS!", result.text);
+        $toast({ text: "Menssage send!" });
+      },
+      (error) => {
+        console.log("FAILED...", error.text);
+        errorAlert("Something went wrong, try again later.");
+      }
+    )
+    .finally(() => {
+      sending.value = false;
+    });
+};
+
+const errorAlert = (msg) => {
+  swal.fire({
+    position: "center",
+    icon: "warning",
+    title: "Ops...",
+    text: msg,
+    showConfirmButton: true,
+  });
 };
 </script>
 
@@ -22,33 +86,41 @@ const sendForm = () => {
         Did you like our <span class="red">platform</span>? <br />
         Give us <span class="blue">feedback</span>, or get in touch!
       </span>
-      <div class="form">
+      <form class="form" ref="form" @submit.prevent="sendEmail">
         <div class="flex flex-between">
           <div class="input-item">
-            <span>Name</span>
-            <input type="text" />
+            <span>Name *</span>
+            <input type="text" name="user_name" v-model="user.name" />
           </div>
           <div class="input-item">
             <span>Email *</span>
-            <input type="mail" />
+            <input type="email" name="user_email" v-model="user.email" />
           </div>
         </div>
         <div class="input-item">
           <span>Message *</span>
-          <textarea></textarea>
+          <textarea name="message" v-model="user.message"></textarea>
         </div>
         <div class="footer-form">
-          <div class="image-holder">
-            <img src="../assets/images/whatsapp.png" alt="whatsapp" />
-            <img src="../assets/images/github.png" alt="github" />
+          <div class="icons-holder">
+            <div class="whats-item" @click="openWhatsapp" target="_blank">
+              <WhatsappIcon />
+            </div>
+            <a
+              href="https://github.com/Leonel-Lara"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GitHubIcon />
+            </a>
           </div>
-          <div class="btn icon">
-            <span>Send</span>
-            <SendIcon fillColor="#fff" />
-            <!-- <div v-show="loadingMore" class="loading black"></div> -->
+          <div @click="checkForm" class="btn icon">
+            <span v-show="!sending">Send</span>
+            <SendIcon v-show="!sending" fillColor="#fff" />
+            <div v-show="sending" class="loading white"></div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
     <img
       class="rick"
@@ -113,7 +185,7 @@ const sendForm = () => {
       width: 100%;
       span {
         font-size: 0.85rem;
-        font-family: fontLight;
+        font-family: fontRegular;
         color: var(--primary);
         margin-bottom: 5px;
       }
@@ -125,17 +197,20 @@ const sendForm = () => {
       justify-content: space-between;
       align-items: center;
       margin-top: 1.35rem;
-      .image-holder {
+      .icons-holder {
         position: relative;
         width: fit-content;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         gap: 20px;
-        img {
+        .whats-item,
+        a {
           position: relative;
-          width: 21.5px;
-          object-fit: cover;
+          display: flex;
+          width: fit-content;
+          justify-content: center;
+          align-items: center;
           cursor: pointer;
           transition: transform 0.25s ease;
           &:hover {

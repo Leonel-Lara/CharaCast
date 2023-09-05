@@ -12,10 +12,6 @@ import ArrowIcon from "vue-material-design-icons/ArrowUpBold";
 const bannerToShow = ref(0);
 const openFilter = ref(false);
 const filterName = ref("");
-const banners = ref([
-  require("../assets/images/pokemon.png"),
-  require("../assets/images/rick-and-morty.png"),
-]);
 
 const changedBanner = (indexBanner) => {
   bannerToShow.value = indexBanner;
@@ -44,7 +40,6 @@ const goTop = () => {
   <BannerList
     class="banner-list animated fadeInDown"
     style="animation-delay: 200ms"
-    :banners="banners"
     @changedBanner="changedBanner"
   />
   <div class="container">
