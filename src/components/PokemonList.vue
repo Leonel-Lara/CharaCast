@@ -19,6 +19,7 @@ const P = new Pokedex();
 const loading = ref(true);
 const loadingMore = ref(false);
 const loadingFilterName = ref(false);
+const loadingMoves = ref(false);
 const page = ref(1);
 const urlPokemon = ref("/api/v2/pokemon?limit=8&offset=0");
 const allPokemonsFeteched = ref(false);
@@ -245,11 +246,9 @@ const getPokemonsDetails = (pokemonsUrl) => {
       quantityPokemons.value = 0;
     })
     .finally(() => {
-      setTimeout(() => {
-        loading.value = false;
-        loadingMore.value = false;
-        loadingFilterName.value = false;
-      }, 500);
+      loading.value = false;
+      loadingMore.value = false;
+      loadingFilterName.value = false;
     });
 };
 
@@ -380,6 +379,8 @@ const setStatName = (stat) => {
 
 const getPokemonMoves = (pokemonName, pokemonMoves) => {
   if (showModal.value) return;
+  showModal.value = true;
+  loadingMoves.value = true;
   pokemonNameMoves.value = pokemonName;
   const arrayMoves = pokemonMoves.map((el) => el.move.name);
   P.getMoveByName(arrayMoves)
@@ -387,17 +388,22 @@ const getPokemonMoves = (pokemonName, pokemonMoves) => {
       pokemonFiltredMoves.value = response.map((el) => {
         const obj = {
           name: el.names.find((n) => n.language.name == "en").name,
-          effect: el.effect_entries.find((ef) => ef.language.name == "en")
-            .short_effect,
+          effect:
+            el.effect_entries.length > 0
+              ? el.effect_entries.find((ef) => ef.language.name == "en")
+                  .short_effect
+              : "Undefined",
         };
         return obj;
       });
     })
     .catch((error) => {
+      showModal.value = false;
       console.log("There was an ERROR: ", error);
+      errorAlert("Something went wrong, try again later.");
     })
     .finally(() => {
-      showModal.value = true;
+      loadingMoves.value = false;
     });
 };
 
@@ -492,7 +498,11 @@ const errorAlert = (msg) => {
   </transition>
   <Modal @close="closeModal" v-show="showModal">
     <template v-slot:title>All {{ pokemonNameMoves }} moves</template>
+    <div class="flex flex-center">
+      <div v-show="loadingMoves" class="loading black"></div>
+    </div>
     <div
+      v-show="!loadingMoves"
       class="move-modal"
       v-for="(move, index) in pokemonFiltredMoves"
       :key="index"

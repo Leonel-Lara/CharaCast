@@ -137,13 +137,21 @@ const errorAlert = (msg) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 2.6rem;
+  padding-bottom: 5rem;
   .pokemon {
     position: absolute;
     top: 50%;
     left: 0;
     transform: translateY(-50%);
     width: 250px;
+    z-index: 2;
+    @media only screen and (min-width: 721px) and (max-width: 1139px) {
+      left: -30px;
+      width: 190px;
+    }
+    @media only screen and (max-width: 720px) {
+      display: none !important;
+    }
   }
   .rick {
     position: absolute;
@@ -151,6 +159,14 @@ const errorAlert = (msg) => {
     right: 0px;
     transform: translateY(-50%);
     width: 220px;
+    z-index: 2;
+    @media only screen and (min-width: 721px) and (max-width: 1139px) {
+      right: -30px;
+      width: 179px;
+    }
+    @media only screen and (max-width: 720px) {
+      display: none !important;
+    }
   }
   .card {
     position: relative;
@@ -164,6 +180,22 @@ const errorAlert = (msg) => {
     padding: 2.6rem 5rem;
     background-color: #fff;
     gap: 25px;
+    @media only screen and (min-width: 721px) and (max-width: 1139px) {
+      width: 70%;
+    }
+    @media only screen and (max-width: 720px) {
+      width: 100%;
+      padding: 1rem 2rem;
+      .flex-between {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 1.35rem;
+        .input-item {
+          width: 100% !important;
+        }
+      }
+    }
   }
   .title {
     text-align: center;

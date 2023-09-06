@@ -98,6 +98,9 @@ const goTop = () => {
   &:hover {
     transform: translateY(-3px);
   }
+  @media only screen and (max-width: 720px) {
+    right: 8px;
+  }
   .material-design-icon {
     display: flex;
   }

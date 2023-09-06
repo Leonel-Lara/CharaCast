@@ -298,6 +298,12 @@ img {
   flex-wrap: wrap;
 }
 
+.flex-center {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .loading {
   animation-duration: 0.8s;
   animation-iteration-count: infinite;
