@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 import FilterIcon from "vue-material-design-icons/FilterMultipleOutline";
 import SearchIcon from "vue-material-design-icons/Magnify";
@@ -7,6 +7,20 @@ import CloseIcon from "vue-material-design-icons/Close";
 
 const filterName = ref("");
 const showCloseIcon = ref(false);
+
+const props = defineProps({
+  bannerToShow: {
+    type: Number,
+    default: 0,
+  },
+});
+
+watch(
+  () => props.bannerToShow,
+  () => {
+    stopFilterCharacterName();
+  }
+);
 
 const emit = defineEmits([
   "startFilterCharacterName",

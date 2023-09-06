@@ -7,7 +7,7 @@ import Form from "@/baseComponents/Form";
 import PokemonList from "@/components/PokemonList";
 import RickAndMortyList from "@/components/RickAndMortyList";
 
-import ArrowIcon from "vue-material-design-icons/ArrowUpBold";
+import ArrowIcon from "vue-material-design-icons/HandPointingUp";
 
 const bannerToShow = ref(0);
 const openFilter = ref(false);
@@ -47,6 +47,7 @@ const goTop = () => {
       @startFilterCharacterName="startFilterCharacterName"
       @stopFilterCharacterName="stopFilterCharacterName"
       @openFilter="openMainFilter"
+      :bannerToShow="bannerToShow"
       class="animated zoomIn"
       style="animation-delay: 400ms"
     />

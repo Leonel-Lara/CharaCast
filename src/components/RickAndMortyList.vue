@@ -3,7 +3,7 @@ import { ref, onMounted, watch, inject } from "vue";
 
 import analyze from "rgbaster";
 
-import { httpRickAndMorty } from "@/http";
+import http from "@/http";
 
 import Modal from "@/baseComponents/Modal";
 import DefaultCardList from "@/components/DefaultCardList";
@@ -78,7 +78,7 @@ const getCharacters = () => {
   if (page.value > 1) loadingMore.value = true;
   else loading.value = true;
 
-  httpRickAndMorty
+  http
     .get(
       `character?page=${page.value}&name=${nameFilter.value}&status=${statusFilter.value}&gender=${genderFilter.value}`
     )
@@ -129,7 +129,7 @@ const getCharacters = () => {
 const getEpisodes = (characterName, episodesId) => {
   if (showModal.value) return;
   characterNameEpisodes.value = characterName;
-  httpRickAndMorty
+  http
     .get(`episode/${episodesId}`)
     .then((response) => {
       if (response?.data?.length > 1) characterEpisodes.value = response?.data;

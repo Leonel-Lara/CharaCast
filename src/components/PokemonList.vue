@@ -4,8 +4,6 @@ import { ref, onMounted, watch, inject } from "vue";
 import Pokedex from "pokedex-promise-v2";
 import analyze from "rgbaster";
 
-import http from "@/http";
-
 import Modal from "@/baseComponents/Modal";
 import DefaultCardList from "@/components/DefaultCardList";
 import Tabs from "@/components/Tabs";
@@ -22,10 +20,9 @@ const loading = ref(true);
 const loadingMore = ref(false);
 const loadingFilterName = ref(false);
 const page = ref(1);
-const urlPokemon = ref("pokemon/?limit=20");
+const urlPokemon = ref("/api/v2/pokemon?limit=8&offset=0");
 const allPokemonsFeteched = ref(false);
 const pokemons = ref([]);
-const pokemonsName = ref([]);
 const quantityPokemons = ref(null);
 const tabs = ref(["Stats", "About", "Move"]);
 const pokemonNameMoves = ref([]);
@@ -192,17 +189,17 @@ const getPokemons = () => {
   if (loadingMore.value) return;
   if (page.value > 1) loadingMore.value = true;
 
-  http
-    .get(urlPokemon.value)
+  P.getResource(urlPokemon.value)
     .then((response) => {
-      pokemonsName.value = response?.data?.results.map((pokemon) => {
-        return pokemon.name;
+      const pokemosnUrl = response?.results.map((pokemon) => {
+        return pokemon.url;
       });
-      getPokemonsDetails();
-      quantityPokemons.value = response?.data?.count;
-      urlPokemon.value = response?.data?.next;
-      if (response?.data?.next) page.value++;
-      else allPokemonsFeteched.value = true;
+      getPokemonsDetails(pokemosnUrl);
+      quantityPokemons.value = response?.count;
+      if (response?.next) {
+        page.value++;
+        urlPokemon.value = response?.next;
+      } else allPokemonsFeteched.value = true;
     })
     .catch((err) => {
       console.log(err);
@@ -211,49 +208,32 @@ const getPokemons = () => {
     });
 };
 
-const getPokemonsDetails = (filterName = "") => {
-  if (filterName) pokemonsName.value = filterName;
-  P.getPokemonByName(pokemonsName.value)
+const getPokemonsDetails = (pokemonsUrl) => {
+  P.getResource(pokemonsUrl)
     .then((response) => {
-      if (!filterName) {
-        pokemons.value = [
-          ...pokemons.value,
-          ...Object.values(response).map((pokemon) => {
-            const defaultPokemon = {
-              id: pokemon.id,
-              name: pokemon.name[0].toUpperCase() + pokemon.name.substr(1),
-              image: pokemon.sprites.other.dream_world.front_default
-                ? pokemon.sprites.other.dream_world.front_default
-                : pokemon.sprites.other["official-artwork"].front_default,
-              stats: pokemon.stats.map((el) => {
-                return { name: el.stat.name, value: el.base_stat };
-              }),
-              selectedTab: 1,
-              moves: pokemon.moves,
-              species: getPokemonSpecies(pokemon),
-            };
-            return defaultPokemon;
-          }),
-        ];
-        pokemons.value.map((el) => {
-          if (el.image) getDominantColor(el);
-        });
-      } else {
-        const defaultPokemon = {
-          id: response.id,
-          name: response.name[0].toUpperCase() + response.name.substr(1),
-          image: response.sprites.other.dream_world.front_default
-            ? response.sprites.other.dream_world.front_default
-            : response.sprites.other["official-artwork"].front_default,
-          stats: response.stats.map((el) => {
-            return { name: el.stat.name, value: el.base_stat };
-          }),
-          selectedTab: 1,
-          moves: response.moves,
-          species: getPokemonSpecies(response),
-        };
-        pokemons.value.push(defaultPokemon);
-        if (defaultPokemon.image) getDominantColor(defaultPokemon);
+      pokemons.value = [
+        ...pokemons.value,
+        ...Object.values(response).map((pokemon) => {
+          const defaultPokemon = {
+            id: pokemon.id,
+            name: pokemon.name[0].toUpperCase() + pokemon.name.substr(1),
+            image: pokemon.sprites.other.dream_world.front_default
+              ? pokemon.sprites.other.dream_world.front_default
+              : pokemon.sprites.other["official-artwork"].front_default,
+            stats: pokemon.stats.map((el) => {
+              return { name: el.stat.name, value: el.base_stat };
+            }),
+            selectedTab: 1,
+            moves: pokemon.moves,
+            species: getPokemonSpecies(pokemon),
+          };
+          return defaultPokemon;
+        }),
+      ];
+      pokemons.value.map((el) => {
+        if (el.image) getDominantColor(el);
+      });
+      if (!quantityPokemons.value) {
         quantityPokemons.value = pokemons.value.length;
       }
     })
@@ -297,13 +277,13 @@ const cleanCssFilterType = (id) => {
 };
 
 const confirmFilterType = () => {
-  pokemonsName.value = [];
   pokemons.value = [];
   allPokemonsFeteched.value = true;
+  quantityPokemons.value = 0;
   closeFilterType();
 
   if (selectedFilterType.value == 0) {
-    urlPokemon.value = "pokemon/?limit=20";
+    urlPokemon.value = "/api/v2/pokemon?limit=8&offset=0";
     page.value = 0;
     allPokemonsFeteched.value = false;
     loading.value = true;
@@ -311,20 +291,17 @@ const confirmFilterType = () => {
     return;
   }
 
-  http
-    .get(`type/${selectedFilterType.value}`)
+  P.getResource(`/api/v2/type/${selectedFilterType.value}`)
     .then((response) => {
-      pokemonsName.value = response?.data?.pokemon.map((el) => {
-        return el.pokemon.name;
+      const pokemonsUrl = response?.pokemon.map((el) => {
+        return el.pokemon.url;
       });
       loading.value = true;
-      quantityPokemons.value = pokemonsName.value.length;
-      getPokemonsDetails();
+      getPokemonsDetails(pokemonsUrl);
     })
     .catch((err) => {
       console.log(err);
       errorAlert("Something went wrong, try again later.");
-      quantityPokemons.value = 0;
     });
 };
 
@@ -333,18 +310,52 @@ const startFilterName = (filterName) => {
   loadingFilterName.value = true;
   pokemons.value = [];
   allPokemonsFeteched.value = true;
-  getPokemonsDetails(filterName);
+  getPokemonsDetailsByName(filterName);
 };
 
 const stopFilterName = () => {
   if (loading.value) return;
   loading.value = true;
   pokemons.value = [];
-  urlPokemon.value = "pokemon/?limit=20";
+  urlPokemon.value = "/api/v2/pokemon?limit=8&ofsset=0";
   getPokemons();
   setTimeout(() => {
     allPokemonsFeteched.value = false;
   }, 500);
+};
+
+const getPokemonsDetailsByName = (filterName) => {
+  P.getPokemonByName(filterName)
+    .then((response) => {
+      const defaultPokemon = {
+        id: response.id,
+        name: response.name[0].toUpperCase() + response.name.substr(1),
+        image: response.sprites.other.dream_world.front_default
+          ? response.sprites.other.dream_world.front_default
+          : response.sprites.other["official-artwork"].front_default,
+        stats: response.stats.map((el) => {
+          return { name: el.stat.name, value: el.base_stat };
+        }),
+        selectedTab: 1,
+        moves: response.moves,
+        species: getPokemonSpecies(response),
+      };
+      if (defaultPokemon.image) getDominantColor(defaultPokemon);
+      pokemons.value.push(defaultPokemon);
+      quantityPokemons.value = pokemons.value.length;
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response.status == 404)
+        errorAlert("We couldn't find any Pokémon");
+      else errorAlert("Something went wrong, try again later.");
+      quantityPokemons.value = 0;
+    })
+    .finally(() => {
+      setTimeout(() => {
+        loadingFilterName.value = false;
+      }, 500);
+    });
 };
 
 const setStatName = (stat) => {
@@ -371,23 +382,23 @@ const getPokemonMoves = (pokemonName, pokemonMoves) => {
   if (showModal.value) return;
   pokemonNameMoves.value = pokemonName;
   const arrayMoves = pokemonMoves.map((el) => el.move.name);
-  let result = { name: "", effect: "" };
-  for (let index = 0; index < arrayMoves.length; index++) {
-    const element = arrayMoves[index];
-    P.getMoveByName(element)
-      .then((response) => {
-        result.name = response?.names[7]?.name;
-        result.effect = response?.effect_entries[0]?.effect;
-        pokemonFiltredMoves.value.push(result);
-        result = { name: "", effect: "" };
-      })
-      .catch((error) => {
-        console.log("There was an ERROR: ", error);
-      })
-      .finally(() => {
-        showModal.value = true;
+  P.getMoveByName(arrayMoves)
+    .then((response) => {
+      pokemonFiltredMoves.value = response.map((el) => {
+        const obj = {
+          name: el.names.find((n) => n.language.name == "en").name,
+          effect: el.effect_entries.find((ef) => ef.language.name == "en")
+            .short_effect,
+        };
+        return obj;
       });
-  }
+    })
+    .catch((error) => {
+      console.log("There was an ERROR: ", error);
+    })
+    .finally(() => {
+      showModal.value = true;
+    });
 };
 
 const closeModal = () => {
@@ -403,6 +414,7 @@ const getPokemonSpecies = (pokemon) => {
     parkEncounters: "",
     shape: "",
     weight: "",
+    type: "",
   };
   P.getResource(pokemon.species.url)
     .then((response) => {
@@ -419,6 +431,7 @@ const getPokemonSpecies = (pokemon) => {
         : "undefined";
       result.shape = response?.shape?.name ? response.shape.name : "undefined";
       result.weight = pokemon?.weight ? pokemon.weight / 10 : "undefined";
+      result.type = pokemon.types.map((el) => el.type.name).join(", ");
     })
     .catch((error) => {
       console.log("There was an ERROR: ", error);
@@ -544,7 +557,7 @@ const errorAlert = (msg) => {
                 </div>
               </div>
             </div>
-            <!-- <div
+            <div
               v-if="pokemon.selectedTab == 2"
               class="species-holder style-scrollbar"
             >
@@ -556,9 +569,10 @@ const errorAlert = (msg) => {
                 </li>
                 <li><span>Species:</span>{{ pokemon.species.shape }}</li>
                 <li><span>Weight:</span>{{ pokemon.species.weight }}kg</li>
+                <li><span>Type:</span>{{ pokemon.species.type }}</li>
               </ul>
               <span class="desc">{{ pokemon.species.text }}</span>
-            </div> -->
+            </div>
             <div v-if="pokemon.selectedTab == 3" class="move-holder">
               <div
                 @click="getPokemonMoves(pokemon.name, pokemon.moves)"
