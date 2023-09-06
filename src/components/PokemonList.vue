@@ -21,7 +21,7 @@ const loadingMore = ref(false);
 const loadingFilterName = ref(false);
 const loadingMoves = ref(false);
 const page = ref(1);
-const urlPokemon = ref("/api/v2/pokemon?limit=8&offset=0");
+const urlPokemon = ref("/api/v2/pokemon?limit=20&offset=0");
 const allPokemonsFeteched = ref(false);
 const pokemons = ref([]);
 const quantityPokemons = ref(null);
@@ -282,7 +282,7 @@ const confirmFilterType = () => {
   closeFilterType();
 
   if (selectedFilterType.value == 0) {
-    urlPokemon.value = "/api/v2/pokemon?limit=8&offset=0";
+    urlPokemon.value = "/api/v2/pokemon?limit=20&offset=0";
     page.value = 0;
     allPokemonsFeteched.value = false;
     loading.value = true;
@@ -316,7 +316,7 @@ const stopFilterName = () => {
   if (loading.value) return;
   loading.value = true;
   pokemons.value = [];
-  urlPokemon.value = "/api/v2/pokemon?limit=8&ofsset=0";
+  urlPokemon.value = "/api/v2/pokemon?limit=20&ofsset=0";
   getPokemons();
   setTimeout(() => {
     allPokemonsFeteched.value = false;

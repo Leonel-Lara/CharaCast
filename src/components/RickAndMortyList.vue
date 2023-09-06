@@ -113,7 +113,7 @@ const getCharacters = () => {
     .catch((err) => {
       console.log(err);
       if (err.response.status == 404) {
-        errorAlert("We couldn't find any Pokémon");
+        errorAlert("We couldn't find any Character");
         quantityCharacters.value = 0;
         allCharactersFeteched.value = true;
       }
