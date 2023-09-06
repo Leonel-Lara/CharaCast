@@ -533,7 +533,7 @@ const errorAlert = (msg) => {
       >
         <div class="card-name" :title="pokemon.name">{{ pokemon.name }}</div>
         <div class="card-img">
-          <img :src="pokemon.image" alt="image Pokémon" loading="lazy" />
+          <img :src="pokemon.image" alt="Image Pokémon" loading="lazy" />
         </div>
         <div class="details-holder">
           <img

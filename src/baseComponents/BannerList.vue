@@ -45,7 +45,7 @@ const changedBanner = (evt) => {
       :key="index"
       class="animated fadeIn slide-item"
     >
-      <img :src="banner" loading="lazy" />
+      <img :src="banner" />
     </swiper-slide>
   </swiper>
 </template>
