@@ -29,7 +29,7 @@ const openWhatsapp = () => {
 };
 
 const checkForm = () => {
-  if (!user.value.name || !user.value.email || !user.value.message) {
+  if (!user.value.message) {
     errorAlert("Please, complete all mandatory information *");
     return;
   }
@@ -49,12 +49,10 @@ const sendEmail = () => {
       "LBB3lKu7Zw3Vmleqq"
     )
     .then(
-      (result) => {
-        console.log("SUCCESS!", result.text);
+      () => {
         $toast({ text: "Menssage send!" });
       },
-      (error) => {
-        console.log("FAILED...", error.text);
+      () => {
         errorAlert("Something went wrong, try again later.");
       }
     )
@@ -89,11 +87,11 @@ const errorAlert = (msg) => {
       <form class="form" ref="form" @submit.prevent="sendEmail">
         <div class="flex flex-between">
           <div class="input-item">
-            <span>Name *</span>
+            <span>Name</span>
             <input type="text" name="user_name" v-model="user.name" />
           </div>
           <div class="input-item">
-            <span>Email *</span>
+            <span>Email</span>
             <input type="email" name="user_email" v-model="user.email" />
           </div>
         </div>
