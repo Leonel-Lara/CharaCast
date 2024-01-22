@@ -262,7 +262,7 @@ const errorAlert = (msg) => {
           {{ character.name }}
         </div>
         <div class="card-img">
-          <img :src="character.image" alt="Image Character" loading="lazy" />
+          <img :src="character.image" alt="Image Character" />
         </div>
         <div class="details-holder">
           <img class="portal" src="@/assets/images/portal.png" alt="portal" />
