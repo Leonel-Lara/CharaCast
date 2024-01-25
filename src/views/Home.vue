@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
+import Modal from "@/baseComponents/Modal";
 import BannerList from "@/baseComponents/BannerList";
 import Menu from "@/baseComponents/Menu";
 import Form from "@/baseComponents/Form";
@@ -9,9 +10,20 @@ import RickAndMortyList from "@/components/RickAndMortyList";
 
 import ArrowIcon from "vue-material-design-icons/HandPointingUp";
 
+const showPopup = ref(false);
 const bannerToShow = ref(0);
 const openFilter = ref(false);
 const filterName = ref("");
+localStorage.showPopupTips = true;
+
+onMounted(() => {
+  if (localStorage.showPopupTips) showPopup.value = true;
+});
+
+const closePopup = () => {
+  localStorage.removeItem("showPopupTips");
+  showPopup.value = false;
+};
 
 const changedBanner = (indexBanner) => {
   bannerToShow.value = indexBanner;
@@ -37,6 +49,30 @@ const goTop = () => {
 </script>
 
 <template>
+  <transition
+    enter-active-class="animated fadeIn"
+    leave-active-class="animated fadeOut"
+  >
+    <div @click="closePopup" v-show="showPopup" class="bg-cover"></div>
+  </transition>
+  <Modal @close="closePopup" v-show="showPopup">
+    <template v-slot:title>Dicas!!</template>
+    <div class="text-holder">
+      <span>
+        O site foi desenvolvido para pesquisa e visualização de personagens, no
+        qual oferece uma interface fácil e intuitiva.
+      </span>
+      <span>
+        Para navegar por todas as séries disponíveis, basta trocar o banner da
+        primeira seção!
+      </span>
+    </div>
+    <div class="flex">
+      <div @click="confirmFilterType" class="btn">
+        <span>Confirmar</span>
+      </div>
+    </div>
+  </Modal>
   <BannerList
     class="banner-list animated fadeInDown"
     style="animation-delay: 200ms"
@@ -72,6 +108,14 @@ const goTop = () => {
 </template>
 
 <style lang="scss" scoped>
+.text-holder {
+  position: relative;
+  text-align: center;
+  span {
+    font-size: 1rem;
+    color: #767676;
+  }
+}
 .banner-list {
   position: relative;
   width: 100%;
