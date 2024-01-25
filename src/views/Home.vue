@@ -14,14 +14,15 @@ const showPopup = ref(false);
 const bannerToShow = ref(0);
 const openFilter = ref(false);
 const filterName = ref("");
-localStorage.showPopupTips = true;
 
 onMounted(() => {
-  if (localStorage.showPopupTips) showPopup.value = true;
+  if (!localStorage.showPopupTips) {
+    localStorage.showPopupTips = true;
+    showPopup.value = true;
+  }
 });
 
 const closePopup = () => {
-  localStorage.removeItem("showPopupTips");
   showPopup.value = false;
 };
 
@@ -68,7 +69,7 @@ const goTop = () => {
       </span>
     </div>
     <div class="flex">
-      <div @click="confirmFilterType" class="btn">
+      <div @click="closePopup" class="btn">
         <span>Confirmar</span>
       </div>
     </div>
