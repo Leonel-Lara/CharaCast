@@ -528,8 +528,7 @@ const errorAlert = (msg) => {
       <div
         v-for="pokemon in pokemons"
         :key="pokemon.id"
-        class="card-holder"
-        :style="`background-color:${pokemon.dominantColor}`"
+        class="card-holder pokemon"
       >
         <div class="card-name" :title="pokemon.name">{{ pokemon.name }}</div>
         <div class="card-img">
@@ -545,7 +544,6 @@ const errorAlert = (msg) => {
             :character="pokemon"
             :tabs="tabs"
             :selectedTab="pokemon.selectedTab"
-            :tabColor="pokemon.dominantColor"
             @setActiveTab="changeTab"
           />
           <div class="details">
@@ -614,7 +612,7 @@ const errorAlert = (msg) => {
   top: -40px;
   left: 10px;
   width: 25px;
-  opacity: 0.2;
+  opacity: 0.7;
 }
 .stats {
   position: relative;
@@ -651,6 +649,7 @@ const errorAlert = (msg) => {
         height: 100%;
         border-radius: 10px;
         background-color: var(--green1);
+        filter: brightness(0.95);
       }
     }
   }

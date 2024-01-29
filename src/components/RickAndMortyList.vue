@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted, watch, inject } from "vue";
 
-import analyze from "rgbaster";
-
 import http from "@/http";
 
 import Modal from "@/baseComponents/Modal";
@@ -105,7 +103,6 @@ const getCharacters = () => {
           return defaultCharacter;
         }),
       ];
-      characters.value.map((el) => getDominantColor(el));
       quantityCharacters.value = response?.data?.info?.count;
       if (response?.data?.info?.next) page.value++;
       else allCharactersFeteched.value = true;
@@ -168,13 +165,6 @@ const closeModal = () => {
   showModal.value = false;
   characterNameEpisodes.value = "";
   characterEpisodes.value = [];
-};
-
-const getDominantColor = async (character) => {
-  const result = await analyze(character.image, {
-    ignore: ["rgb(255,255,255)", "rgb(0,0,0)", "rgb(238, 238, 239)"],
-  });
-  character.dominantColor = result[0].color;
 };
 
 const errorAlert = (msg) => {
@@ -255,8 +245,7 @@ const errorAlert = (msg) => {
       <div
         v-for="character in characters"
         :key="character.id"
-        class="card-holder"
-        :style="`background-color:${character.dominantColor}`"
+        class="card-holder rick-and-morty"
       >
         <div class="card-name" :title="character.name">
           {{ character.name }}
@@ -270,7 +259,6 @@ const errorAlert = (msg) => {
             :character="character"
             :tabs="tabs"
             :selectedTab="character.selectedTab"
-            :tabColor="character.dominantColor"
             @setActiveTab="changeTab"
           />
           <div class="details">

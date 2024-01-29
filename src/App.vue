@@ -422,7 +422,6 @@ img {
 .card-holder {
   position: relative;
   height: 440px;
-  background-color: var(--green1);
   border-radius: 12px;
   box-shadow: var(--box-shadow-default);
   padding-top: 1.2rem;
@@ -433,6 +432,28 @@ img {
   @media only screen and (max-width: 900px) {
     padding-top: 1rem;
   }
+  &::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0) 78.27%, #000000 120%);
+    border-radius: 12px;
+  }
+  &.pokemon {
+    background-image: url("./assets/images/bg-pokemon.webp");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+  &.rick-and-morty {
+    background-image: url("./assets/images/bg-rick-and-morty.webp");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
   .card-name {
     text-align: center;
     color: #fff;
@@ -442,6 +463,7 @@ img {
     -webkit-box-orient: vertical;
     overflow: hidden;
     cursor: default;
+    z-index: 2;
   }
   .card-img {
     position: relative;

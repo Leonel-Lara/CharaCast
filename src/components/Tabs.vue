@@ -41,12 +41,6 @@ watch(
     setCss(val.length);
   }
 );
-watch(
-  () => props.tabColor,
-  () => {
-    setCss(props.tabs);
-  }
-);
 
 onMounted(() => {
   setCss(props.tabs.length);
@@ -58,10 +52,10 @@ const setCss = (tabsLength) => {
     obj.style.width = `${100 / tabsLength}%`;
     obj.style.color = `#b6b6b6`;
   });
-  tabItems[props.selectedTab - 1].style.color = props?.tabColor;
+  tabItems[props.selectedTab - 1].style.color = "#000";
 
   activeBorder.value.style.width = `${100 / tabsLength}%`;
-  activeBorder.value.style.background = props?.tabColor;
+  activeBorder.value.style.background = "#000";
   activeBorder.value.style.transform = `translateX(${
     100 * (props.selectedTab - 1)
   }%)`;
