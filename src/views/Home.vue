@@ -122,7 +122,7 @@ const goTop = () => {
   width: 100%;
   object-fit: cover;
   @media only screen and (max-width: 720px) {
-    height: 145px;
+    height: 225px;
   }
 }
 .button-top {

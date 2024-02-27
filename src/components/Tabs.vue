@@ -39,6 +39,7 @@ watch(
   () => props.selectedTab,
   (val) => {
     setCss(val.length);
+    console.log(val);
   }
 );
 
@@ -62,6 +63,7 @@ const setCss = (tabsLength) => {
 };
 
 const setActiveTab = (index) => {
+  console.log("test");
   emit("setActiveTab", index + 1, props.character);
 };
 </script>

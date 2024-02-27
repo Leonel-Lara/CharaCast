@@ -113,26 +113,30 @@ img {
 
 .swiper-button-next,
 .swiper-button-prev {
-  width: 40px !important;
-  height: 40px !important;
+  width: 45px !important;
+  height: 45px !important;
   border-radius: 100%;
-  background-color: #00000088;
+  background-color: #131313b4;
   color: #fff !important;
   z-index: 2;
   &::after {
     font-size: 1.2rem !important;
   }
+  @media only screen and (max-width: 720px) {
+    background-color: #ffffff88;
+    color: #000 !important;
+  }
 }
 .swiper-button-next {
   right: 50px !important;
   @media only screen and (max-width: 720px) {
-    right: 25px !important;
+    right: 20px !important;
   }
 }
 .swiper-button-prev {
   left: 50px !important;
   @media only screen and (max-width: 720px) {
-    left: 25px !important;
+    left: 20px !important;
   }
 }
 
@@ -489,6 +493,7 @@ img {
     height: 220px;
     background-color: #fff;
     border-radius: 20px 20px 12px 12px;
+    z-index: 1;
     .details {
       position: relative;
       width: 100%;

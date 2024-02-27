@@ -13,6 +13,15 @@ const banners = ref([
   require("../assets/images/rick-and-morty.png"),
 ]);
 
+const bannersMobile = ref([
+  require("../assets/images/pokemon-mobile.png"),
+  require("../assets/images/rick-and-morty-mobile.png"),
+]);
+
+const setBbanners = () => {
+  return window.innerWidth >= 1160 ? banners.value : bannersMobile.value;
+};
+
 const swiperInstance = ref(null);
 
 const setSwiper = (swiper) => {
@@ -41,7 +50,7 @@ const changedBanner = (evt) => {
     @activeIndexChange="changedBanner"
   >
     <swiper-slide
-      v-for="(banner, index) in banners"
+      v-for="(banner, index) in setBbanners()"
       :key="index"
       class="animated fadeIn slide-item"
     >

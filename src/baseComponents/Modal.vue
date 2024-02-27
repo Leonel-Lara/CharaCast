@@ -43,7 +43,7 @@ const close = () => {
   right: 0;
   bottom: 0;
   max-width: 620px;
-  max-height: 90vh;
+  max-height: 80vh;
   background-color: #fff;
   margin: 0 auto;
   z-index: 999;
